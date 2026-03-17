@@ -1,0 +1,301 @@
+{
+  "executed_at": "2026-03-17T01:18:21.885Z",
+  "test_runner": "bash tests/run.sh",
+  "exit_code": 0,
+  "results": [
+    {
+      "tc_id": "TC-001h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-001h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-001e",
+      "status": "pass",
+      "notes": "✔ TC-001e: normalize produces correct hierarchy edges for FR→US→TC chain (0.823458ms)"
+    },
+    {
+      "tc_id": "TC-001f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-001f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-002h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-002h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-002e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-002e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-002f",
+      "status": "pass",
+      "notes": "✔ TC-002f: node with missing status field defaults to pending without throwing (0.13375ms)"
+    },
+    {
+      "tc_id": "TC-003h",
+      "status": "pass",
+      "notes": "✔ TC-003h: ZOOM_STEP is 0.10 — zoom changes by exactly 10% per click (0.683917ms)"
+    },
+    {
+      "tc_id": "TC-003e",
+      "status": "pass",
+      "notes": "✔ TC-003e: zoom controls call cy.zoom with ZOOM_STEP delta (0.0585ms)"
+    },
+    {
+      "tc_id": "TC-003f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-003f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-004h",
+      "status": "pass",
+      "notes": "✔ TC-004h: autoungrabify is true — nodes cannot be dragged, only panned (0.04775ms)"
+    },
+    {
+      "tc_id": "TC-004e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-004e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-004f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-004f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-005h",
+      "status": "pass",
+      "notes": "✔ TC-005h: collapsedState Map tracks expanded/collapsed descendants (0.0405ms)"
+    },
+    {
+      "tc_id": "TC-005e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-005e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-005f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-005f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-006h",
+      "status": "pass",
+      "notes": "✔ TC-006h: normalize produces dependency edge for US-002 → US-001 (0.088083ms)"
+    },
+    {
+      "tc_id": "TC-006e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-006e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-006f",
+      "status": "pass",
+      "notes": "✔ TC-006f: dependency referencing non-existent node ID does not crash and produces no edge (0.077625ms)"
+    },
+    {
+      "tc_id": "TC-007h",
+      "status": "pass",
+      "notes": "✔ TC-007h: tooltip rendering function references all required fields (0.054333ms)"
+    },
+    {
+      "tc_id": "TC-007e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-007e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-007f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-007f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-008h",
+      "status": "pass",
+      "notes": "✔ TC-008h: buildGitHubRawUrl constructs correct raw.githubusercontent.com URL (0.427083ms)"
+    },
+    {
+      "tc_id": "TC-008e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-008e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-008f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-008f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-009h",
+      "status": "pass",
+      "notes": "✔ TC-009h: GET /api/project returns 200 with artifacts for valid Aitri path (19.521583ms)"
+    },
+    {
+      "tc_id": "TC-009e",
+      "status": "pass",
+      "notes": "✔ TC-009e: GET /api/project returns 200 with testCases=null when 03_TEST_CASES.json absent (1.637209ms)"
+    },
+    {
+      "tc_id": "TC-009f",
+      "status": "pass",
+      "notes": "✔ TC-009f: GET /api/project returns 404 for non-existent path (0.627208ms)"
+    },
+    {
+      "tc_id": "TC-010h",
+      "status": "pass",
+      "notes": "✔ TC-010h: deriveName correctly extracts project name from local path (0.0725ms)"
+    },
+    {
+      "tc_id": "TC-010e",
+      "status": "pass",
+      "notes": "✔ TC-010e: deriveName correctly extracts repo name from GitHub URL (0.112042ms)"
+    },
+    {
+      "tc_id": "TC-010f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-010f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-011h",
+      "status": "pass",
+      "notes": "✔ TC-011h: validateProjectInput returns valid=true source=github for GitHub URL (0.364667ms)"
+    },
+    {
+      "tc_id": "TC-011e",
+      "status": "pass",
+      "notes": "✔ TC-011e: validateProjectInput returns valid=true source=local for absolute path (0.076584ms)"
+    },
+    {
+      "tc_id": "TC-011f",
+      "status": "pass",
+      "notes": "✔ TC-011f: validateProjectInput returns valid=false with error.length>=10 for \"myproject\" (0.060042ms)"
+    },
+    {
+      "tc_id": "TC-012h",
+      "status": "pass",
+      "notes": "✔ TC-012h: fit() method calls cy.fit with 40px padding (0.040917ms)"
+    },
+    {
+      "tc_id": "TC-012e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-012e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-012f",
+      "status": "pass",
+      "notes": "✔ TC-012f: graph controls are disabled when no graph is loaded (0.046125ms)"
+    },
+    {
+      "tc_id": "TC-NFR005h",
+      "status": "pass",
+      "notes": "✔ TC-NFR005h: GET /api/project?path=../../etc/passwd returns 400 with no file content (0.550375ms)"
+    },
+    {
+      "tc_id": "TC-NFR005f",
+      "status": "pass",
+      "notes": "✔ TC-NFR005f: GET /api/project?path=relative/path returns 400 (0.442834ms)"
+    },
+    {
+      "tc_id": "TC-E2E-flow1h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-flow1h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-E2E-flow2h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-flow2h:\" to be auto-detected. Likely requires browser or integration environment."
+    }
+  ],
+  "fr_coverage": [
+    {
+      "fr_id": "FR-001",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-002",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-003",
+      "tests_passing": 2,
+      "tests_failing": 0,
+      "tests_skipped": 1,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-004",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-005",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-006",
+      "tests_passing": 2,
+      "tests_failing": 0,
+      "tests_skipped": 1,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-007",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-008",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-009",
+      "tests_passing": 5,
+      "tests_failing": 0,
+      "tests_skipped": 0,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-010",
+      "tests_passing": 2,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-011",
+      "tests_passing": 3,
+      "tests_failing": 0,
+      "tests_skipped": 1,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-012",
+      "tests_passing": 2,
+      "tests_failing": 0,
+      "tests_skipped": 1,
+      "status": "covered"
+    }
+  ],
+  "summary": {
+    "total": 40,
+    "passed": 22,
+    "failed": 0,
+    "skipped": 18,
+    "skipped_e2e": 15,
+    "skipped_no_marker": 3
+  }
+}

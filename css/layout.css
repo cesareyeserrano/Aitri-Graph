@@ -1,0 +1,133 @@
+/* Layout — Aitri Graph Visualizer */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* ── App Shell ── */
+#app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  min-width: 1280px;
+}
+
+/* ── Sidebar ── */
+#sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100%;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#sidebar-header {
+  padding: var(--sp-4) var(--sp-4) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#sidebar-header h1 {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+#project-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-2) 0;
+}
+
+#project-list::-webkit-scrollbar { width: 4px; }
+#project-list::-webkit-scrollbar-track { background: transparent; }
+#project-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+#add-project-section {
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Graph Canvas Area ── */
+#canvas-area {
+  flex: 1;
+  position: relative;
+  background: var(--canvas-bg);
+  overflow: hidden;
+}
+
+#cy {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Floating Panels ── */
+#graph-controls {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+#status-legend {
+  position: absolute;
+  bottom: var(--sp-2);
+  left: var(--sp-2);
+  z-index: 10;
+}
+
+/* ── Canvas States ── */
+.canvas-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  z-index: 5;
+}
+
+.canvas-state.hidden { display: none; }
+
+/* ── Responsive: 768px ── */
+@media (max-width: 768px) {
+  #sidebar {
+    position: fixed;
+    left: -var(--sidebar-width);
+    z-index: 100;
+    transform: translateX(calc(-1 * var(--sidebar-width)));
+    transition: transform 150ms ease;
+  }
+  #sidebar.open { transform: translateX(0); }
+  #app { min-width: 0; }
+  #canvas-area { width: 100vw; }
+  #mobile-toggle {
+    display: flex;
+    position: absolute;
+    top: var(--sp-2);
+    left: var(--sp-2);
+    z-index: 20;
+  }
+}
+
+/* ── Responsive: 375px ── */
+@media (max-width: 375px) {
+  #graph-controls { top: var(--sp-2); right: var(--sp-2); }
+}

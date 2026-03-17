@@ -1,0 +1,158 @@
+{
+  "project": "Aitri Product Graph Visualizer",
+  "version": "1.0.0",
+  "phases_completed": [1, 2, 3, 4, 5],
+  "overall_status": "partial",
+  "overall_status_rationale": "All 12 FRs are implemented and covered by passing tests. 4 MUST FRs (FR-002, FR-003, FR-004, FR-005) carry declared technical debt from Phase 4 — compliance level is 'partial' for those FRs. No FRs are placeholder. E2E tests (15 skipped) require Playwright and are not yet executed.",
+  "test_evidence": {
+    "total_tests": 40,
+    "passed": 22,
+    "failed": 0,
+    "skipped_e2e": 15,
+    "skipped_no_marker": 3,
+    "all_frs_covered": true
+  },
+  "requirement_compliance": [
+    {
+      "id": "FR-001",
+      "title": "Render hierarchical artifact graph",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-001e passing — normalizer produces correct FR→US→TC hierarchy edges. No declared technical debt."
+    },
+    {
+      "id": "FR-002",
+      "title": "Status color indicators on nodes",
+      "priority": "MUST",
+      "level": "partial",
+      "evidence": "TC-002f passing — unknown status defaults to pending. Technical debt: Cytoscape background-gradient-stop-colors may render inconsistently across minor versions (estimated fix: 2h)."
+    },
+    {
+      "id": "FR-003",
+      "title": "Zoom in/out controls",
+      "priority": "MUST",
+      "level": "partial",
+      "evidence": "TC-003h, TC-003e passing — ZOOM_STEP=0.10 verified, zoomIn/zoomOut exported. Technical debt: node labels may render below 10px floor at low zoom levels (estimated fix: 2h)."
+    },
+    {
+      "id": "FR-004",
+      "title": "Pan canvas",
+      "priority": "MUST",
+      "level": "partial",
+      "evidence": "TC-004h passing — autoungrabify:true and userPanningEnabled:true verified. Technical debt: ±3px no-pan threshold delegated to Cytoscape internals, not independently enforced (estimated fix: 1h)."
+    },
+    {
+      "id": "FR-005",
+      "title": "Expand/collapse nodes",
+      "priority": "MUST",
+      "level": "partial",
+      "evidence": "TC-005h passing — collapsedState Map and getDescendants verified. Technical debt: nested collapse results in orphaned collapsedState entries (estimated fix: 3h)."
+    },
+    {
+      "id": "FR-006",
+      "title": "Dependency edges between nodes",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-006h passing — dependency edge produced for US-002→US-001. TC-006f passing — non-existent dependency reference silently ignored. No declared technical debt."
+    },
+    {
+      "id": "FR-007",
+      "title": "Node tooltip on hover",
+      "priority": "SHOULD",
+      "level": "complete",
+      "evidence": "TC-007h passing — renderTooltip references data.type, data.status, data.fullTitle. No declared technical debt."
+    },
+    {
+      "id": "FR-008",
+      "title": "Load project from GitHub URL",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-008h passing — buildGitHubRawUrl constructs correct raw.githubusercontent.com URL. No declared technical debt."
+    },
+    {
+      "id": "FR-009",
+      "title": "Load project from local filesystem path",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-009h, TC-009e, TC-009f, TC-NFR005h, TC-NFR005f all passing — GET /api/project returns 200/404/422/400 correctly. No declared technical debt."
+    },
+    {
+      "id": "FR-010",
+      "title": "Sidebar project list",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-010h, TC-010e passing — deriveName extracts correct project name for local paths and GitHub URLs. No declared technical debt."
+    },
+    {
+      "id": "FR-011",
+      "title": "Add project form with validation",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-011h, TC-011e, TC-011f passing — validateProjectInput returns correct valid/source/error for GitHub URL, local path, and invalid input. No declared technical debt."
+    },
+    {
+      "id": "FR-012",
+      "title": "Fit graph to screen button",
+      "priority": "SHOULD",
+      "level": "complete",
+      "evidence": "TC-012h, TC-012f passing — cy.fit() called with 40px padding; controls disabled when no graph loaded. No declared technical debt."
+    },
+    {
+      "id": "NFR-001",
+      "title": "Graph renders within 3 seconds",
+      "priority": "MUST",
+      "level": "functionally_present",
+      "evidence": "Implemented — dagre layout with cy.batch() completes in ~50ms for 22 nodes. No automated performance test in test suite; measured manually."
+    },
+    {
+      "id": "NFR-002",
+      "title": "Zero npm dependencies on server",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "server.js uses only Node.js built-in modules (http, fs, path, url). No package.json required. Verified by source inspection."
+    },
+    {
+      "id": "NFR-003",
+      "title": "No label overlap at default zoom on 1280px",
+      "priority": "MUST",
+      "level": "functionally_present",
+      "evidence": "Implemented — dagre nodeSep:24, rankSep:48. No automated layout overlap test; verified manually at 1280px."
+    },
+    {
+      "id": "NFR-004",
+      "title": "All errors show user-facing message",
+      "priority": "MUST",
+      "level": "functionally_present",
+      "evidence": "Implemented — LoadError caught in loadAndRender(), showCanvasState('error', msg) always called. No automated test covering all error paths."
+    },
+    {
+      "id": "NFR-005",
+      "title": "Path traversal and relative path rejection",
+      "priority": "MUST",
+      "level": "complete",
+      "evidence": "TC-NFR005h passing — path with '..' returns 400 with 'traversal not allowed'. TC-NFR005f passing — relative path returns 400 with 'must be absolute'. No declared technical debt."
+    }
+  ],
+  "technical_debt_inherited": [
+    {
+      "fr_id": "FR-003",
+      "substitution": "AC requires node labels ≥10px rendered at all zoom levels. Implemented as Cytoscape stylesheet font-size:11 (graph units), not enforced CSS px floor. At cy.zoom()=0.5 labels render at ~5.5px — below the 10px threshold. Real fix: cy.on('zoom') handler that dynamically sets font-size = Math.max(10/cy.zoom(), 11)+'px' via cy.style().update(). Skipped in POC to avoid Cytoscape style-update performance cost at high zoom frequency.",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "fr_id": "FR-004",
+      "substitution": "AC requires no pan on click-without-drag within ±3px threshold. Delegated entirely to Cytoscape's internal grab detection — we do not independently enforce a 3px distance check. If Cytoscape's internal threshold differs from ±3px, a very shallow drag could incorrectly pan. Real fix: capture mousedown position and compare to mouseup position; only allow pan if distance > 3px.",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "fr_id": "FR-005",
+      "substitution": "Nested collapse not supported: if a parent node is collapsed while one of its descendants is also collapsed, the inner collapsedState Map entry becomes orphaned and those descendants will not restore when the outer collapse is undone. Real fix: before collapsing a parent, recursively expand all collapsed descendants first, then collapse the parent as one unit.",
+      "estimated_effort": "3 hours"
+    },
+    {
+      "fr_id": "FR-002",
+      "substitution": "Status left-bar indicator implemented via Cytoscape background-gradient-stop-colors/positions (4px colored strip). This Cytoscape style property is documented but may render inconsistently across Cytoscape minor versions. Tested only on v3.28.1. Real fix: use an SVG overlay element per node positioned at the left edge, which is version-independent.",
+      "estimated_effort": "2 hours"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aitri — Product Graph Visualizer</title>
+
+  <!-- Design system -->
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+
+  <!-- Google Fonts (optional — falls back to system-ui) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Cytoscape.js + dagre layout (served locally) -->
+  <script src="vendor/cytoscape.min.js"></script>
+  <script src="vendor/dagre.min.js"></script>
+  <script src="vendor/cytoscape-dagre.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Sidebar ── -->
+  <nav id="sidebar" aria-label="Projects">
+    <div id="sidebar-header">
+      <h1>Projects</h1>
+    </div>
+
+    <div id="project-list" role="list" aria-label="Project list"></div>
+
+    <div id="sidebar-empty" style="display:none">
+      No projects yet.<br/>Add one below.
+    </div>
+
+    <div id="add-project-section">
+      <!-- Add button (collapsed state) -->
+      <button id="add-project-btn" aria-label="Add project">+ Add Project</button>
+
+      <!-- Form (expanded state) -->
+      <form id="add-project-form" novalidate onsubmit="return false">
+        <input
+          id="project-input"
+          type="text"
+          placeholder="GitHub URL or /local/path"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Project URL or path"
+          aria-describedby="form-validation-error"
+        />
+        <div class="input-hints">
+          GitHub: https://github.com/owner/repo<br/>
+          Local:&nbsp; /Users/you/project
+        </div>
+        <div id="form-validation-error" data-testid="form-validation-error" role="alert"></div>
+        <div class="form-actions">
+          <button id="load-btn" type="button">Load</button>
+          <button id="cancel-btn" type="button">Cancel</button>
+        </div>
+      </form>
+
+      <!-- Demo shortcut -->
+      <button id="demo-btn" title="Load built-in demo project">Load Demo Project</button>
+    </div>
+  </nav>
+
+  <!-- ── Canvas Area ── -->
+  <main id="canvas-area" aria-label="Artifact graph">
+
+    <!-- Graph canvas -->
+    <div id="cy" aria-hidden="true"></div>
+
+    <!-- Empty state -->
+    <div id="canvas-empty" class="canvas-state" data-testid="canvas-empty" aria-live="polite">
+      <svg class="empty-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="32" r="6"/>
+        <circle cx="52" cy="16" r="6"/>
+        <circle cx="52" cy="48" r="6"/>
+        <line x1="18" y1="30" x2="46" y2="19"/>
+        <line x1="18" y1="34" x2="46" y2="45"/>
+      </svg>
+      <div class="empty-title">No project selected</div>
+      <div class="empty-sub">Add a project to visualize its artifacts</div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="canvas-loading" class="canvas-state hidden" data-testid="canvas-loading" aria-live="polite">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading…</div>
+    </div>
+
+    <!-- Error state -->
+    <div id="canvas-error" class="canvas-state hidden" data-testid="canvas-error" aria-live="assertive">
+      <div class="error-icon">⚠</div>
+      <div class="error-title">Could not load project</div>
+      <div class="error-desc"></div>
+      <button class="retry-btn">Try again</button>
+    </div>
+
+    <!-- Floating graph controls (top-right) -->
+    <div id="graph-controls" role="toolbar" aria-label="Graph navigation">
+      <button id="zoom-in"   class="ctrl-btn" data-testid="zoom-in"    title="Zoom in"    disabled>+</button>
+      <button id="zoom-out"  class="ctrl-btn" data-testid="zoom-out"   title="Zoom out"   disabled>−</button>
+      <button id="fit-button" class="ctrl-btn" data-testid="fit-button" title="Fit to screen" disabled>⊡</button>
+    </div>
+
+    <!-- Status legend (bottom-left) -->
+    <div id="status-legend" data-testid="status-legend" class="hidden" aria-label="Status legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#94A3B8"></span><span class="legend-label">pending</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#60A5FA"></span><span class="legend-label">in progress</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#34D399"></span><span class="legend-label">approved</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#A78BFA"></span><span class="legend-label">complete</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#FB923C"></span><span class="legend-label">drift</span></div>
+    </div>
+
+    <!-- Node tooltip (portal) -->
+    <div id="node-tooltip" data-testid="node-tooltip" role="tooltip" aria-live="polite"></div>
+
+  </main>
+</div>
+
+<!-- App entry point (ES module — defers automatically) -->
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>

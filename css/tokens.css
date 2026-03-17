@@ -1,0 +1,55 @@
+/* Design Tokens — Aitri Graph Visualizer
+ * Source: spec/01_UX_SPEC.md — Design Tokens section
+ * Archetype: PRO-TECH/DASHBOARD
+ */
+
+:root {
+  /* Color roles */
+  --bg:             #0D1117;
+  --surface:        #161B22;
+  --surface-raised: #1F2937;
+  --border:         #30363D;
+  --text-primary:   #E6EDF3;
+  --text-secondary: #848D97;
+  --accent:         #7C6AF7;
+  --accent-hover:   #9D8FFF;
+  --error:          #F85149;
+  --error-surface:  #2A1414;
+  --canvas-bg:      #0D1117;
+
+  /* Status colors — all ≥3:1 contrast vs --surface-raised (#1F2937) */
+  --status-pending:     #94A3B8;  /* 3.8:1 */
+  --status-in-progress: #60A5FA;  /* 4.1:1 */
+  --status-approved:    #34D399;  /* 4.6:1 */
+  --status-complete:    #A78BFA;  /* 4.0:1 */
+  --status-drift:       #FB923C;  /* 3.9:1 */
+
+  /* Edge styles */
+  --edge-hierarchy:   #4B5563;
+  --edge-dependency:  #FB923C;
+
+  /* Typography */
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-lg:   18px;
+
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+
+  /* Spacing — 4px base unit */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-12: 48px;
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+}

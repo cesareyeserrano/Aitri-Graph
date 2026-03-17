@@ -1,0 +1,91 @@
+{
+  "project_name": "E-Commerce Platform Demo",
+  "epics": [
+    { "id": "EPIC-01", "title": "Shopping Experience", "status": "in_progress" },
+    { "id": "EPIC-02", "title": "User Management",     "status": "approved"    }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FR-001", "epic_id": "EPIC-01",
+      "title": "Product Search & Discovery",
+      "description": "Users can search products by keyword, category, and filters.",
+      "priority": "MUST", "status": "approved",
+      "acceptance_criteria": ["Search returns results within 500ms for queries with ≥2 characters"]
+    },
+    {
+      "id": "FR-002", "epic_id": "EPIC-01",
+      "title": "Shopping Cart Management",
+      "description": "Users can add, remove, and update quantities of items in their cart.",
+      "priority": "MUST", "status": "in_progress",
+      "acceptance_criteria": ["Cart persists across page refreshes via localStorage"]
+    },
+    {
+      "id": "FR-003", "epic_id": "EPIC-02",
+      "title": "User Registration & Login",
+      "description": "New users can register and existing users can log in.",
+      "priority": "MUST", "status": "complete",
+      "acceptance_criteria": ["Registration requires email + password ≥8 chars; login returns JWT"]
+    },
+    {
+      "id": "FR-004", "epic_id": "EPIC-02",
+      "title": "Order History",
+      "description": "Logged-in users can view their past orders with status and items.",
+      "priority": "SHOULD", "status": "pending",
+      "acceptance_criteria": ["Order list loads in ≤2s; shows date, total, and status per order"]
+    }
+  ],
+  "user_stories": [
+    {
+      "id": "US-001", "requirement_id": "FR-001", "status": "approved",
+      "as_a": "Shopper", "i_want": "to search products by keyword",
+      "so_that": "I find what I need quickly without browsing all categories"
+    },
+    {
+      "id": "US-002", "requirement_id": "FR-001", "status": "approved",
+      "dependencies": ["US-001"],
+      "as_a": "Shopper", "i_want": "to filter search results by price range",
+      "so_that": "I only see products I can afford"
+    },
+    {
+      "id": "US-003", "requirement_id": "FR-002", "status": "in_progress",
+      "as_a": "Shopper", "i_want": "to add a product to my cart",
+      "so_that": "I can purchase multiple items in a single checkout"
+    },
+    {
+      "id": "US-004", "requirement_id": "FR-002", "status": "pending",
+      "dependencies": ["US-003"],
+      "as_a": "Shopper", "i_want": "to update item quantities in my cart",
+      "so_that": "I can buy more or fewer units without removing and re-adding"
+    },
+    {
+      "id": "US-005", "requirement_id": "FR-003", "status": "complete",
+      "as_a": "New User", "i_want": "to create an account with email and password",
+      "so_that": "I can track my orders and save my preferences"
+    },
+    {
+      "id": "US-006", "requirement_id": "FR-003", "status": "complete",
+      "as_a": "Returning User", "i_want": "to log in with my credentials",
+      "so_that": "I can access my account and order history"
+    },
+    {
+      "id": "US-007", "requirement_id": "FR-004", "status": "drift",
+      "as_a": "Logged-in User", "i_want": "to view my past orders",
+      "so_that": "I can track deliveries and reorder items I liked"
+    },
+    {
+      "id": "US-008", "requirement_id": "FR-004", "status": "pending",
+      "as_a": "Logged-in User", "i_want": "to filter orders by date range",
+      "so_that": "I can find a specific past purchase quickly"
+    }
+  ],
+  "test_cases_inline": [
+    { "id": "TC-001", "requirement_id": "FR-001", "user_story_id": "US-001", "title": "Keyword search returns results", "status": "complete" },
+    { "id": "TC-002", "requirement_id": "FR-001", "user_story_id": "US-002", "title": "Price filter narrows results", "status": "complete" },
+    { "id": "TC-003", "requirement_id": "FR-002", "user_story_id": "US-003", "title": "Add to cart increments count", "status": "in_progress" },
+    { "id": "TC-004", "requirement_id": "FR-002", "user_story_id": "US-004", "title": "Quantity update persists on reload", "status": "pending" },
+    { "id": "TC-005", "requirement_id": "FR-003", "user_story_id": "US-005", "title": "Registration validates email format", "status": "complete" },
+    { "id": "TC-006", "requirement_id": "FR-003", "user_story_id": "US-006", "title": "Login returns JWT on valid credentials", "status": "complete" },
+    { "id": "TC-007", "requirement_id": "FR-004", "user_story_id": "US-007", "title": "Order list shows last 20 orders", "status": "drift" },
+    { "id": "TC-008", "requirement_id": "FR-004", "user_story_id": "US-008", "title": "Date filter returns correct subset", "status": "pending" }
+  ]
+}

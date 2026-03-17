@@ -1,0 +1,437 @@
+{
+  "project_name": "Aitri Product Graph Visualizer",
+  "project_summary": "Web application (localhost-first) that renders a hierarchical graph of Aitri artifacts (Epics, Features, User Stories, Test Cases) with status indicators, zoom/pan navigation, expand/collapse, and cross-hierarchy dependency edges. Supports loading projects from a GitHub repository URL or from a local filesystem path via a minimal Node.js server. Multiple projects can be registered and switched via a sidebar.",
+  "product_analysis": {
+    "north_star_kpi": "User identifies the status of any artifact and its dependencies within 30 seconds of opening the app, without opening any file",
+    "jtbd": "When reviewing a product's spec pipeline, the PM/developer hires this tool to instantly see the full artifact hierarchy, what's done, what's blocked, and what depends on what — without opening multiple JSON files",
+    "guardrail_metric": "Initial graph render with 50 nodes must complete in ≤3 seconds on a standard desktop browser (Chrome/Firefox latest)"
+  },
+  "no_go_zone": [
+    "No authentication or user accounts — no login, sessions, roles, or access control",
+    "No editing of artifacts from the UI — the graph is read-only",
+    "No database or remote persistence — project list may use localStorage or in-memory only",
+    "No mobile-first or responsive design — targets desktop browsers at ≥1280px viewport width",
+    "No real-time updates or WebSocket connections — data is loaded on demand, not pushed",
+    "No private GitHub repositories — no OAuth flow, no GitHub token management for POC",
+    "No cloud deployment for POC — runs on localhost only"
+  ],
+  "user_personas": [
+    {
+      "role": "Product Manager",
+      "tech_level": "mid",
+      "goal": "Review which Features and User Stories are approved, pending, or drifted before a sprint review or demo, without asking the dev team to open files",
+      "pain_point": "Currently must open multiple JSON/MD files and mentally reconstruct the hierarchy; misses drift or gaps under deadline pressure"
+    },
+    {
+      "role": "Developer / Tech Lead",
+      "tech_level": "high",
+      "goal": "Verify Test Case coverage per Feature and spot cross-artifact dependencies before starting implementation",
+      "pain_point": "Dependency chains between User Stories are invisible in file-based workflows; discovering a missing dependency late causes rework"
+    }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FR-001",
+      "title": "Hierarchical graph render from loaded project data",
+      "description": "Given a loaded Aitri project (from GitHub or local), the app renders a directed hierarchical graph with nodes for Epics, Features, User Stories, and Test Cases connected parent-to-child (Epic → Feature → User Story → Test Case). All nodes and edges defined in the source data must appear on load.",
+      "priority": "MUST",
+      "type": "logic",
+      "acceptance_criteria": [
+        "Given a project with 2 Epics, 4 Features, 8 User Stories, and 8 Test Cases, when the project is loaded and selected, then all 22 nodes are visible in the graph within 3 seconds",
+        "Given the rendered graph, when inspected, then each Epic has visible directed edges to its Feature children, each Feature to its User Stories, and each User Story to its Test Cases",
+        "Given a project source that returns malformed or empty JSON, when the project is loaded, then a visible error message appears in the graph canvas area (not a blank page)"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-002",
+      "title": "Artifact status visual indicator per node",
+      "description": "Each node displays a visual indicator (color fill or border plus icon) for its artifact status. Supported statuses: pending, in_progress, approved, complete, drift. A persistent legend maps each status to its visual representation.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given nodes with statuses pending, in_progress, approved, complete, and drift, when rendered, then each status uses a unique color or icon distinct from all others",
+        "Given any two status colors in the graph, when measured, then contrast ratio between the status color and the node background is ≥3:1",
+        "Given the rendered graph, when inspected, then a visible legend mapping each status to its color/icon is present on screen at all times"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-003",
+      "title": "Zoom in/out on graph canvas",
+      "description": "The user can zoom in and out using mouse scroll wheel and on-screen +/- controls. Zoom scales graph content without distorting labels or edges.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given the rendered graph, when the user scrolls the mouse wheel up, then the graph scales up and node labels remain at ≥10px font size",
+        "Given the rendered graph, when the user scrolls down, then the graph scales down until all nodes fit in view",
+        "Given on-screen +/- buttons, when clicked, then zoom level changes by ≥10% per click",
+        "Given any zoom level, when displayed, then edge lines are ≥1px thick"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-004",
+      "title": "Pan (drag) navigation on graph canvas",
+      "description": "The user can drag the canvas to pan. Panning on empty canvas areas must not interfere with node click interactions.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given the rendered graph, when the user clicks and drags an empty canvas area, then the viewport translates in the drag direction",
+        "Given a node is clicked without dragging, when the pointer is released in the same position (±3px), then no pan occurs",
+        "Given the user has panned, when the mouse is released, then the graph stays at the new position without snapping back"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-005",
+      "title": "Expand/collapse sub-tree on node click",
+      "description": "Parent nodes (Epics, Features, User Stories) can be collapsed to hide their descendant sub-tree. The collapsed state is reflected visually on the node.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given a Feature node with 3 child User Story nodes visible, when the user clicks it, then all 3 User Story nodes and their Test Case children are hidden",
+        "Given a collapsed node, when clicked again, then all previously hidden descendants reappear in their original positions",
+        "Given a collapsed node, when rendered, then a visual indicator (e.g. '+' icon or dimmed border) distinguishes it from an expanded node",
+        "Given a leaf node (no children), when clicked, then no collapse/expand behavior occurs"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-006",
+      "title": "Dependency edges between non-hierarchical nodes",
+      "description": "Any node can declare dependencies on other nodes (cross-hierarchy). These are rendered as visually distinct edges from parent-child hierarchy edges.",
+      "priority": "MUST",
+      "type": "logic",
+      "acceptance_criteria": [
+        "Given two nodes with a declared dependency, when the graph renders, then a directed edge connects them and is visually distinct from hierarchy edges (different color or dashed/dotted line)",
+        "Given a dependency edge and a hierarchy edge visible simultaneously, when inspected, then a user can distinguish them without a tooltip",
+        "Given a dependency edge, when rendered, then a directional arrowhead indicates the direction of the dependency"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-007",
+      "title": "Node detail tooltip on hover",
+      "description": "Hovering over a node shows a tooltip with the node's key metadata: id, title, type, status, and dependencies (if any).",
+      "priority": "SHOULD",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given any node in the graph, when hovered, then a tooltip appears within 300ms showing: id, title, type, and status",
+        "Given a node with dependencies, when the tooltip is shown, then dependency IDs are listed",
+        "Given an active tooltip, when the pointer moves away from the node, then the tooltip disappears within 500ms"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-008",
+      "title": "Load project from GitHub repository URL",
+      "description": "The user can register a project by entering a public GitHub repository URL. The app constructs raw content URLs using the known Aitri artifact paths (spec/01_REQUIREMENTS.json, spec/03_TEST_CASES.json, .aitri) and fetches them client-side. No server required for GitHub projects.",
+      "priority": "MUST",
+      "type": "logic",
+      "acceptance_criteria": [
+        "Given a valid public GitHub repo URL (e.g. https://github.com/owner/repo), when the user submits it, then the app fetches spec/01_REQUIREMENTS.json from raw.githubusercontent.com and renders the graph within 5 seconds",
+        "Given a GitHub URL pointing to a repo without Aitri artifacts, when fetched, then a visible error message states 'No Aitri artifacts found' in the graph area",
+        "Given a GitHub URL for a non-existent repo, when fetched, then a visible error message states the repo was not found (HTTP 404)"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-009",
+      "title": "Load project from local filesystem path",
+      "description": "The user can register a project by entering an absolute local filesystem path. The minimal Node.js server exposes GET /api/project?path=... which reads the Aitri artifacts at that path and returns them as JSON. The frontend calls this endpoint to load the project.",
+      "priority": "MUST",
+      "type": "logic",
+      "acceptance_criteria": [
+        "Given a valid local path to an Aitri project directory, when the user submits it, then the server reads spec/01_REQUIREMENTS.json from that path and the graph renders within 3 seconds",
+        "Given a path that does not contain Aitri artifacts, when submitted, then the server returns a descriptive error and the app displays 'No Aitri artifacts found at this path'",
+        "Given a path that does not exist on the filesystem, when submitted, then the server returns 404 and the app displays a visible error message"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-010",
+      "title": "Project sidebar — list and switch projects",
+      "description": "A persistent sidebar lists all registered projects (name + source type: GitHub or local). The user selects a project from the sidebar to load its graph in the main canvas. Only one project is shown at a time. Projects can be removed from the sidebar.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given 3 registered projects, when the sidebar is rendered, then all 3 appear as selectable items showing name and source type (GitHub or local)",
+        "Given a project item in the sidebar, when the user clicks it, then the graph canvas updates to show that project's artifact graph within 3 seconds",
+        "Given the currently active project, when displayed in the sidebar, then it is visually highlighted (e.g. bold, background color, or active indicator) to distinguish it from inactive projects",
+        "Given a project in the sidebar, when the user clicks a remove/delete control, then the project is removed from the list and, if it was active, the canvas is cleared"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-011",
+      "title": "Register new project via input form",
+      "description": "A UI element (button or inline form) allows the user to add a new project by entering either a GitHub URL or a local path. The form validates the input format before submitting.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given the add-project form, when the user enters a string that does not start with 'https://github.com/' or '/' (absolute path), then a validation error message (≥10 characters) appears inline within 100ms and no network request is made",
+        "Given a valid GitHub URL or local path, when submitted, then the project is added to the sidebar within 500ms and auto-selected",
+        "Given a successful project load, when the form is dismissed, then the input field value is empty (length = 0)"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-012",
+      "title": "Fit-to-screen / reset view control",
+      "description": "An on-screen button resets zoom and pan so all nodes are visible within the viewport.",
+      "priority": "SHOULD",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given the user has zoomed in or panned away, when they click the Fit/Reset button, then all nodes become visible within the viewport within 500ms",
+        "Given the fit action completes, when the graph is inspected, then no node is clipped or outside the visible canvas area"
+      ],
+      "implementation_level": "functional"
+    }
+  ],
+  "user_stories": [
+    {
+      "id": "US-001",
+      "requirement_id": "FR-001",
+      "as_a": "Product Manager",
+      "i_want": "to select a project and see all its artifacts rendered as a graph",
+      "so_that": "I can understand the full structure of the product without opening any files",
+      "acceptance_criteria": [
+        {
+          "id": "AC-001",
+          "given": "a project with 2 Epics, 4 Features, 8 User Stories, and 8 Test Cases is selected in the sidebar",
+          "when": "the graph loads",
+          "then": "all 22 nodes are visible in the graph canvas within 3 seconds"
+        },
+        {
+          "id": "AC-002",
+          "given": "the graph is rendered",
+          "when": "the user inspects an Epic node",
+          "then": "visible directed edges connect it to each of its Feature children"
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "requirement_id": "FR-002",
+      "as_a": "Product Manager",
+      "i_want": "to see the status of each artifact visually on its node",
+      "so_that": "I can identify approved, pending, and drifted items at a glance without reading labels",
+      "acceptance_criteria": [
+        {
+          "id": "AC-003",
+          "given": "a graph with nodes of all 5 statuses",
+          "when": "rendered",
+          "then": "each status has a unique color or icon and a persistent on-screen legend maps each status to its visual representation"
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "requirement_id": "FR-003",
+      "as_a": "Developer",
+      "i_want": "to zoom in on a dense graph area",
+      "so_that": "I can read labels and inspect connections in crowded sections",
+      "acceptance_criteria": [
+        {
+          "id": "AC-004",
+          "given": "a rendered graph with 22 nodes",
+          "when": "the user scrolls the mouse wheel upward 5 times",
+          "then": "the graph zooms in and node labels remain at ≥10px"
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "requirement_id": "FR-004",
+      "as_a": "Developer",
+      "i_want": "to drag the canvas after zooming in",
+      "so_that": "I can navigate to off-screen nodes freely",
+      "acceptance_criteria": [
+        {
+          "id": "AC-005",
+          "given": "the user has zoomed in so that some nodes are off-screen",
+          "when": "the user clicks and drags an empty canvas area",
+          "then": "the viewport pans and previously off-screen nodes come into view"
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "requirement_id": "FR-005",
+      "as_a": "Product Manager",
+      "i_want": "to collapse an Epic's sub-tree when I only care about top-level status",
+      "so_that": "the graph is less cluttered",
+      "acceptance_criteria": [
+        {
+          "id": "AC-006",
+          "given": "a Feature node with 3 child User Stories visible",
+          "when": "the user clicks the Feature node",
+          "then": "the 3 User Stories and their Test Case children are hidden and the Feature shows a collapsed indicator"
+        },
+        {
+          "id": "AC-007",
+          "given": "a Feature node is collapsed",
+          "when": "clicked again",
+          "then": "all previously hidden descendants reappear"
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "requirement_id": "FR-006",
+      "as_a": "Developer",
+      "i_want": "to see dependency edges between User Stories that block each other",
+      "so_that": "I can identify implementation order before sprint planning",
+      "acceptance_criteria": [
+        {
+          "id": "AC-008",
+          "given": "two User Stories with a declared dependency",
+          "when": "the graph renders",
+          "then": "a directed edge connects them with a style (dashed or different color) distinct from hierarchy edges, with a visible arrowhead"
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "requirement_id": "FR-007",
+      "as_a": "Product Manager",
+      "i_want": "to hover over a node and see its key metadata",
+      "so_that": "I can confirm id, type, and status without switching to a file",
+      "acceptance_criteria": [
+        {
+          "id": "AC-009",
+          "given": "any rendered node",
+          "when": "hovered",
+          "then": "a tooltip appears within 300ms showing id, title, type, and status"
+        }
+      ]
+    },
+    {
+      "id": "US-008",
+      "requirement_id": "FR-008",
+      "as_a": "Developer",
+      "i_want": "to enter a GitHub repo URL and see its Aitri graph",
+      "so_that": "I can inspect any public Aitri project without cloning it locally",
+      "acceptance_criteria": [
+        {
+          "id": "AC-010",
+          "given": "a valid public GitHub repo URL with Aitri artifacts",
+          "when": "submitted via the add-project form",
+          "then": "the app fetches the artifacts and renders the graph within 5 seconds"
+        }
+      ]
+    },
+    {
+      "id": "US-009",
+      "requirement_id": "FR-009",
+      "as_a": "Developer",
+      "i_want": "to enter a local folder path and see its Aitri graph",
+      "so_that": "I can inspect a local Aitri project I'm actively working on",
+      "acceptance_criteria": [
+        {
+          "id": "AC-011",
+          "given": "a valid local path to an Aitri project",
+          "when": "submitted via the add-project form",
+          "then": "the Node.js server reads the artifacts and the graph renders within 3 seconds"
+        }
+      ]
+    },
+    {
+      "id": "US-010",
+      "requirement_id": "FR-010",
+      "as_a": "Product Manager",
+      "i_want": "to see all my registered projects in a sidebar and switch between them",
+      "so_that": "I can compare project status across multiple products without re-entering their paths",
+      "acceptance_criteria": [
+        {
+          "id": "AC-012",
+          "given": "3 registered projects",
+          "when": "the sidebar is visible",
+          "then": "all 3 appear with name and source type (GitHub or local)"
+        },
+        {
+          "id": "AC-013",
+          "given": "a project in the sidebar",
+          "when": "clicked",
+          "then": "the graph updates to show that project's artifacts within 3 seconds"
+        }
+      ]
+    },
+    {
+      "id": "US-011",
+      "requirement_id": "FR-011",
+      "as_a": "Developer",
+      "i_want": "to add a new project by typing its GitHub URL or local path",
+      "so_that": "I can register any Aitri project quickly",
+      "acceptance_criteria": [
+        {
+          "id": "AC-014",
+          "given": "the add-project form",
+          "when": "the user enters a string that is neither a GitHub URL nor an absolute path",
+          "then": "a validation error appears inline and no fetch is attempted"
+        }
+      ]
+    },
+    {
+      "id": "US-012",
+      "requirement_id": "FR-012",
+      "as_a": "Product Manager",
+      "i_want": "to reset the view to see the full graph with one click",
+      "so_that": "I can recover quickly after getting lost in a zoomed-in view",
+      "acceptance_criteria": [
+        {
+          "id": "AC-015",
+          "given": "the user has zoomed in and panned away",
+          "when": "the Fit/Reset button is clicked",
+          "then": "all nodes are visible within the viewport within 500ms and no node is clipped"
+        }
+      ]
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-001",
+      "category": "Performance",
+      "requirement": "Initial graph render with ≥22 nodes must complete within 3 seconds of project selection, measured from the moment the artifact data is available in the browser",
+      "acceptance_criteria": "Graph is fully painted and interactive within 3 seconds as measured by browser DevTools Performance tab with the mock dataset"
+    },
+    {
+      "id": "NFR-002",
+      "category": "Usability",
+      "requirement": "The app must start with a single command ('node server.js' or equivalent) with no build step. The Node.js server must be a single file with no npm dependencies beyond Node.js built-ins",
+      "acceptance_criteria": "App is fully functional after running 'node server.js' from the project root with no prior 'npm install' or build command"
+    },
+    {
+      "id": "NFR-003",
+      "category": "Usability",
+      "requirement": "The graph layout must be automatically computed and must not produce overlapping node labels at default zoom for the mock dataset on a 1280px-wide viewport",
+      "acceptance_criteria": "At default zoom on a 1280px viewport, no two node labels overlap as verified by visual inspection"
+    },
+    {
+      "id": "NFR-004",
+      "category": "Reliability",
+      "requirement": "All error states (missing artifacts, network failure, invalid path) must display a descriptive message in the UI — no blank canvas, no uncaught exceptions in the console",
+      "acceptance_criteria": "For each of the 3 error scenarios (missing artifacts, 404, malformed JSON), the app shows a visible error message ≥10 characters in the graph area and the browser console shows no uncaught exceptions"
+    },
+    {
+      "id": "NFR-005",
+      "category": "Security",
+      "requirement": "The local Node.js server must reject path traversal attempts: any path containing '..' must return HTTP 400 with no file content",
+      "acceptance_criteria": "GET /api/project?path=../../etc/passwd returns HTTP 400 and no file content is returned"
+    }
+  ],
+  "constraints": [
+    "Node.js built-ins only for the server — no npm packages, no external dependencies",
+    "No paid or proprietary libraries — open source only (MIT/Apache/BSD) for frontend",
+    "No frontend build step (CDN imports acceptable for graph library)",
+    "Target viewport: desktop, ≥1280px width",
+    "GitHub projects: public repos only (no auth)"
+  ],
+  "technology_preferences": [
+    "Graph rendering: Cytoscape.js or D3.js — Architect decides based on ease of hierarchical layout + dependency edges + expand/collapse",
+    "Frontend: Vanilla JS preferred; React via CDN acceptable if complexity warrants it",
+    "Server: Node.js built-in http module only (no Express, no Fastify)",
+    "Single HTML entry point (index.html) loading JS/CSS as sibling files"
+  ]
+}
