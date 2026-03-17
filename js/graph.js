@@ -64,22 +64,25 @@ export function initGraph(container) {
   // ── Expand/Collapse (FR-005) ──────────────────────────────────
   cy.on('tap', 'node', function (evt) {
     const node = evt.target;
-    const descendants = getDescendants(cy, node);
-    if (descendants.length === 0) return; // leaf node — no behavior (TC-005f)
 
+    // Check collapse first — descendants are removed when collapsed,
+    // so getDescendants() would return empty and exit early if checked before this.
     if (node.hasClass('collapsed')) {
-      // Restore
       const saved = collapsedState.get(node.id());
       if (saved) saved.restore();
       collapsedState.delete(node.id());
       node.removeClass('collapsed');
-    } else {
-      // Expand any nested collapsed descendants first (FR-005 debt fix)
-      expandDescendantsOf(node);
-      // Collapse parent — re-get descendants after inner expansions
-      collapsedState.set(node.id(), getDescendants(cy, node).remove());
-      node.addClass('collapsed');
+      return;
     }
+
+    const descendants = getDescendants(cy, node);
+    if (descendants.length === 0) return; // leaf node — no behavior (TC-005f)
+
+    // Expand any nested collapsed descendants first (FR-005 debt fix)
+    expandDescendantsOf(node);
+    // Collapse parent — re-get descendants after inner expansions
+    collapsedState.set(node.id(), getDescendants(cy, node).remove());
+    node.addClass('collapsed');
   });
 
   // ── FR-004 fix: ±3px no-pan threshold on background click ─────
@@ -221,6 +224,8 @@ export function initGraph(container) {
 
     /** Expose cy for tests */
     _cy: cy,
+    /** Expose collapse state for tests */
+    _collapsedState: collapsedState,
   };
 }
 
@@ -351,6 +356,7 @@ function renderTooltip(el, data) {
 }
 
 function positionTooltip(el, renderedPos, container) {
+  if (!renderedPos) return;
   const rect = container.getBoundingClientRect();
   const x = rect.left + renderedPos.x + 12;
   const y = rect.top  + renderedPos.y - 8;

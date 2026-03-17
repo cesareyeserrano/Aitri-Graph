@@ -19,3 +19,4 @@ initSidebar(gc);
 
 // Expose cy for e2e tests (Playwright)
 window.__cy = gc._cy;
+window.__gc = gc;
