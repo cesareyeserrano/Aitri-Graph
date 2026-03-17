@@ -48,6 +48,19 @@ export function initGraph(container) {
   // Expand/collapse state: Map<nodeId, removedElements>
   const collapsedState = new Map();
 
+  // ── FR-005 fix: expand all collapsed descendants before collapsing parent
+  function expandDescendantsOf(node) {
+    cy.edges(`[edgeType = "hierarchy"][source = "${node.id()}"]`).targets().forEach(child => {
+      if (child.hasClass('collapsed')) {
+        const saved = collapsedState.get(child.id());
+        if (saved) saved.restore();
+        collapsedState.delete(child.id());
+        child.removeClass('collapsed');
+      }
+      expandDescendantsOf(child);
+    });
+  }
+
   // ── Expand/Collapse (FR-005) ──────────────────────────────────
   cy.on('tap', 'node', function (evt) {
     const node = evt.target;
@@ -61,11 +74,47 @@ export function initGraph(container) {
       collapsedState.delete(node.id());
       node.removeClass('collapsed');
     } else {
-      // Collapse
-      const toRemove = descendants;
-      collapsedState.set(node.id(), toRemove.remove());
+      // Expand any nested collapsed descendants first (FR-005 debt fix)
+      expandDescendantsOf(node);
+      // Collapse parent — re-get descendants after inner expansions
+      collapsedState.set(node.id(), getDescendants(cy, node).remove());
       node.addClass('collapsed');
     }
+  });
+
+  // ── FR-004 fix: ±3px no-pan threshold on background click ─────
+  let panStart = null;
+  let panPosAtStart = null;
+  cy.on('mousedown', evt => {
+    if (evt.target !== cy) return; // only on background
+    panStart = { x: evt.originalEvent.clientX, y: evt.originalEvent.clientY };
+    panPosAtStart = { ...cy.pan() };
+  });
+  cy.on('mouseup', evt => {
+    if (panStart && evt.target === cy) {
+      const dx = evt.originalEvent.clientX - panStart.x;
+      const dy = evt.originalEvent.clientY - panStart.y;
+      if (Math.sqrt(dx * dx + dy * dy) <= 3) cy.pan(panPosAtStart);
+    }
+    panStart = null;
+    panPosAtStart = null;
+  });
+
+  // ── FR-003 fix: enforce 10px font-size floor at all zoom levels ─
+  let zoomThrottle = null;
+  cy.on('zoom', () => {
+    if (zoomThrottle) return;
+    zoomThrottle = setTimeout(() => {
+      zoomThrottle = null;
+      const zoom = cy.zoom();
+      cy.batch(() => {
+        const fs = base => Math.max(10 / zoom, base) + 'px';
+        cy.nodes('[type = "epic"]').style('font-size', fs(12));
+        cy.nodes('[type = "feature"]').style('font-size', fs(11));
+        cy.nodes('[type = "user_story"]').style('font-size', fs(11));
+        cy.nodes('[type = "test_case"]').style('font-size', fs(10));
+      });
+    }, 16); // throttle to ~60fps
   });
 
   // ── Tooltip (FR-007) ──────────────────────────────────────────

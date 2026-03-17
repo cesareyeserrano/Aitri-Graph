@@ -8,19 +8,7 @@ if (window.cytoscape && window.cytoscapeDagre) {
 
 const container = document.getElementById('cy');
 
-let gc;
-try {
-  gc = initGraph(container);
-} catch (err) {
-  // Show error in canvas area so it's visible
-  container.innerHTML = `<div style="padding:24px;color:#F85149;font-family:monospace;font-size:13px">
-    <b>initGraph failed:</b><br>${err.message}<br><br>
-    window.cytoscape = ${typeof window.cytoscape}<br>
-    window.cytoscapeDagre = ${typeof window.cytoscapeDagre}
-  </div>`;
-  // Still init sidebar so buttons work (without graph)
-  gc = { render() {}, clear() {}, zoomIn() {}, zoomOut() {}, fit() {}, destroy() {}, _cy: null };
-}
+const gc = initGraph(container);
 
 // Wire controls
 document.getElementById('zoom-in').addEventListener('click',    () => gc.zoomIn());
