@@ -1,13 +1,14 @@
 {
-  "name": "poc",
+  "name": "aitri-graph",
   "version": "1.0.0",
-  "description": "",
+  "description": "Aitri Graph Visualizer — interactive dependency graph for software artifacts",
   "main": "server.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test tests/server.test.js tests/config.test.js tests/normalizer.test.js",
+    "test:e2e": "playwright test",
     "start": "node server.js"
   },
   "repository": {

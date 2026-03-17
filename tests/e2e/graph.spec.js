@@ -6,8 +6,13 @@
  *           TC-E2E-flow1h, TC-E2E-flow2h
  */
 import { test, expect } from '@playwright/test';
+import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 
-const DEMO_PATH = '/Users/cesareyeserrano/Documents/PROJECTS/Drafts/POC';
+// Absolute path to the committed fixture — portable across machines.
+// Override with AITRI_LOCAL_FIXTURE env var to test against a real project.
+const FIXTURE_DIR = resolve(fileURLToPath(new URL('../fixtures/sample-project', import.meta.url)));
+const DEMO_PATH   = process.env.AITRI_LOCAL_FIXTURE ?? FIXTURE_DIR;
 
 // ── helpers ───────────────────────────────────────────────────────
 

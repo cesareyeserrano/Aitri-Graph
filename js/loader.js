@@ -62,22 +62,28 @@ async function loadGitHub(url) {
 }
 
 /**
- * Try 'main' branch first, fallback to 'master'.
+ * Resolve 'main' or 'master' branch by probing both in parallel.
  * Returns branch name or null if neither found.
  * @aitri-trace TC-ID: TC-008e
  */
 async function resolveBranch(owner, repo) {
-  const mainUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/spec/01_REQUIREMENTS.json`;
-  const masterUrl = `https://raw.githubusercontent.com/${owner}/${repo}/master/spec/01_REQUIREMENTS.json`;
+  const toUrl = branch =>
+    `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/spec/01_REQUIREMENTS.json`;
 
-  const mainRes = await fetchWithTimeout(mainUrl);
-  if (mainRes.ok) return 'main';
+  const [mainResult, masterResult] = await Promise.allSettled([
+    fetchWithTimeout(toUrl('main')),
+    fetchWithTimeout(toUrl('master')),
+  ]);
 
-  const masterRes = await fetchWithTimeout(masterUrl);
-  if (masterRes.ok) return 'master';
+  if (mainResult.status === 'fulfilled' && mainResult.value.ok) return 'main';
+  if (masterResult.status === 'fulfilled' && masterResult.value.ok) return 'master';
 
-  if (mainRes.status === 404 && masterRes.status === 404) return null;
-  throw new LoadError('NETWORK_ERROR', `Network error fetching repository (${mainRes.status})`);
+  // Both 404 → no spec found
+  const mainStatus = mainResult.status === 'fulfilled' ? mainResult.value.status : 0;
+  const masterStatus = masterResult.status === 'fulfilled' ? masterResult.value.status : 0;
+  if (mainStatus === 404 && masterStatus === 404) return null;
+
+  throw new LoadError('NETWORK_ERROR', `Network error fetching repository (${mainStatus || masterStatus})`);
 }
 
 // ── Local loader ──────────────────────────────────────────────────

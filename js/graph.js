@@ -20,7 +20,11 @@ const NODE_SIZES = {
   test_case:  { width: 96,  height: 28 },
 };
 
-const ZOOM_STEP = 0.10; // 10% per click
+const ZOOM_STEP         = 0.10; // 10% per click
+const ZOOM_THROTTLE_MS  = 16;   // ~60fps
+const PAN_THRESHOLD     = 3;    // px — click-without-drag tolerance
+const FIT_PADDING       = 40;   // px — viewport padding on fit
+const FONT_SIZE_FLOOR   = 10;   // px — minimum readable label size at any zoom
 const TOOLTIP_SHOW_DELAY = 0;   // instantaneous (Cytoscape fires at mouseover)
 const TOOLTIP_HIDE_DELAY = 300; // ms
 
@@ -97,7 +101,7 @@ export function initGraph(container) {
     if (panStart && evt.target === cy) {
       const dx = evt.originalEvent.clientX - panStart.x;
       const dy = evt.originalEvent.clientY - panStart.y;
-      if (Math.sqrt(dx * dx + dy * dy) <= 3) cy.pan(panPosAtStart);
+      if (Math.sqrt(dx * dx + dy * dy) <= PAN_THRESHOLD) cy.pan(panPosAtStart);
     }
     panStart = null;
     panPosAtStart = null;
@@ -111,13 +115,13 @@ export function initGraph(container) {
       zoomThrottle = null;
       const zoom = cy.zoom();
       cy.batch(() => {
-        const fs = base => Math.max(10 / zoom, base) + 'px';
+        const fs = base => Math.max(FONT_SIZE_FLOOR / zoom, base) + 'px';
         cy.nodes('[type = "epic"]').style('font-size', fs(12));
         cy.nodes('[type = "feature"]').style('font-size', fs(11));
         cy.nodes('[type = "user_story"]').style('font-size', fs(11));
         cy.nodes('[type = "test_case"]').style('font-size', fs(10));
       });
-    }, 16); // throttle to ~60fps
+    }, ZOOM_THROTTLE_MS);
   });
 
   // ── Tooltip (FR-007) ──────────────────────────────────────────
@@ -193,7 +197,7 @@ export function initGraph(container) {
         rankSep: 48,
         edgeSep: 10,
         fit: true,
-        padding: 40,
+        padding: FIT_PADDING,
         animate: false,
       }).run();
     },
@@ -215,7 +219,7 @@ export function initGraph(container) {
 
     /** @aitri-trace FR-ID: FR-012, TC-ID: TC-012h */
     fit() {
-      cy.fit(undefined, 40);
+      cy.fit(undefined, FIT_PADDING);
     },
 
     destroy() {

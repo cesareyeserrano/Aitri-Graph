@@ -24,6 +24,15 @@ export function initSidebar(gc) {
   document.getElementById('load-btn').addEventListener('click', handleLoad);
   document.getElementById('demo-btn').addEventListener('click', handleDemo);
 
+  // Mobile sidebar toggle
+  const mobileToggle = document.getElementById('mobile-toggle');
+  if (mobileToggle) {
+    const sidebar = document.getElementById('sidebar');
+    mobileToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    // Close sidebar when a project is selected on mobile
+    on('project:added', () => sidebar.classList.remove('open'));
+  }
+
   const input = document.getElementById('project-input');
   input.addEventListener('keydown', e => { if (e.key === 'Enter') handleLoad(); });
 

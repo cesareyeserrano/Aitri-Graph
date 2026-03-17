@@ -5,13 +5,30 @@
  * @aitri-trace FR-ID: FR-009, NFR-005
  */
 import { createServer } from 'http';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, realpathSync } from 'fs';
 import { join, resolve, extname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const PORT = process.env.PORT ?? 3000;
 const ROOT = __dirname;
+
+// ── Rate limiting (per IP, /api/project only) ─────────────────────
+const RATE_LIMIT_MAX       = 30;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const rateLimitMap = new Map();
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -43,6 +60,9 @@ function json(res, status, body) {
  * @aitri-trace FR-ID: FR-009, TC-ID: TC-009h, TC-009e, TC-009f, TC-NFR005h, TC-NFR005f
  */
 function handleApiProject(req, res, url) {
+  const ip = req.socket.remoteAddress ?? 'unknown';
+  if (!checkRateLimit(ip)) return json(res, 429, { error: 'Too many requests — slow down' });
+
   const path = url.searchParams.get('path');
 
   if (!path)              return json(res, 400, { error: 'Invalid path: missing' });
@@ -51,6 +71,13 @@ function handleApiProject(req, res, url) {
   if (path.length > 512)  return json(res, 400, { error: 'Invalid path: too long' });
 
   if (!existsSync(path))  return json(res, 404, { error: `Path not found: ${path}` });
+
+  // Resolve symlinks and verify the real path matches — prevents symlink traversal
+  let resolvedPath;
+  try { resolvedPath = realpathSync(path); } catch {
+    return json(res, 400, { error: 'Invalid path: cannot resolve' });
+  }
+  if (resolvedPath !== path) return json(res, 400, { error: 'Invalid path: symlinks not allowed' });
 
   const reqPath = join(path, 'spec', '01_REQUIREMENTS.json');
   if (!existsSync(reqPath)) return json(res, 422, { error: 'No Aitri artifacts found at this path' });
@@ -99,6 +126,9 @@ function handleStatic(req, res, pathname) {
 
 const server = createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
+  res.on('finish', () => {
+    console.log(`${new Date().toISOString()} ${req.method} ${url.pathname} ${res.statusCode}`);
+  });
   if (req.method === 'GET' && url.pathname === '/api/project') {
     return handleApiProject(req, res, url);
   }

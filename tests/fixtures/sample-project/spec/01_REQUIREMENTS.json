@@ -1,0 +1,14 @@
+{
+  "project_name": "Sample Project",
+  "functional_requirements": [
+    {
+      "id": "FR-001",
+      "title": "Sample Feature",
+      "status": "approved",
+      "user_stories": [
+        { "id": "US-001", "title": "Sample Story", "status": "complete" }
+      ]
+    }
+  ],
+  "user_stories": []
+}
