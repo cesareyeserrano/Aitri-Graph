@@ -20,8 +20,8 @@ const NODE_SIZES = {
   test_case:  { width: 96,  height: 28 },
 };
 
-const ZOOM_STEP         = 0.10; // 10% per click
-const ZOOM_THROTTLE_MS  = 16;   // ~60fps
+const ZOOM_STEP = 0.10; // 10% per click
+const ZOOM_THROTTLE_MS = 16;   // ~60fps
 const PAN_THRESHOLD     = 3;    // px — click-without-drag tolerance
 const FIT_PADDING       = 40;   // px — viewport padding on fit
 const FONT_SIZE_FLOOR   = 10;   // px — minimum readable label size at any zoom
