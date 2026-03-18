@@ -1,0 +1,208 @@
+{
+  "executed_at": "2026-03-17T22:15:02.951Z",
+  "test_runner": "node --test ../../tests/cards.test.js",
+  "exit_code": 0,
+  "results": [
+    {
+      "tc_id": "TC-013h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-013h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-013e",
+      "status": "pass",
+      "notes": "✔ TC-013e: toggle closes an open card — openCards.delete called on second toggle (0.639291ms)"
+    },
+    {
+      "tc_id": "TC-013f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-013f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-014h",
+      "status": "pass",
+      "notes": "✔ TC-014h: renderCard renders standard fields in fixed order (0.046459ms)"
+    },
+    {
+      "tc_id": "TC-014e",
+      "status": "pass",
+      "notes": "✔ TC-014e: acceptance_criteria array renders as <ul><li> list, not concatenated (0.0405ms)"
+    },
+    {
+      "tc_id": "TC-014f",
+      "status": "pass",
+      "notes": "✔ TC-014f: missing field is silently omitted — no empty row rendered (0.051292ms)"
+    },
+    {
+      "tc_id": "TC-015h",
+      "status": "pass",
+      "notes": "✔ TC-015h: STATUS_COLORS.approved background is #34D399 (matches graph.js) (0.041459ms)"
+    },
+    {
+      "tc_id": "TC-015e",
+      "status": "pass",
+      "notes": "✔ TC-015e: all 5 statuses have distinct bg hex values in STATUS_COLORS (0.099083ms)"
+    },
+    {
+      "tc_id": "TC-015f",
+      "status": "pass",
+      "notes": "✔ TC-015f: drift status badge contrast ratio ≥4.5:1 — #FB923C on #0f172a text (0.080792ms)"
+    },
+    {
+      "tc_id": "TC-016h",
+      "status": "pass",
+      "notes": "✔ TC-016h: computeStackPosition anchors cards at right edge using window.innerWidth (0.035209ms)"
+    },
+    {
+      "tc_id": "TC-016e",
+      "status": "pass",
+      "notes": "✔ TC-016e: clampToViewport uses getBoundingClientRect height for bottom clamping (0.048875ms)"
+    },
+    {
+      "tc_id": "TC-016f",
+      "status": "pass",
+      "notes": "✔ TC-016f (CSS): card has max-height: 60vh and card-body is scrollable (0.067542ms)"
+    },
+    {
+      "tc_id": "TC-017h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-017h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-017e",
+      "status": "pass",
+      "notes": "✔ TC-017e: close(nodeId) removes only the targeted card, not others (0.043583ms)"
+    },
+    {
+      "tc_id": "TC-017f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-017f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-018h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-018h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-018e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-018e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-018f",
+      "status": "pass",
+      "notes": "✔ TC-018f: openCards Map has no size limit — 6th card can be added (0.045ms)"
+    },
+    {
+      "tc_id": "TC-019h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-019h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-019e",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-019e:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-019f",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-019f:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-019s",
+      "status": "pass",
+      "notes": "✔ TC-019s: cards use position:fixed — immune to canvas transform (0.0235ms)"
+    },
+    {
+      "tc_id": "TC-020h",
+      "status": "pass",
+      "notes": "✔ TC-020h: CARD_GAP separates stacked cards — each card starts below the previous (0.027167ms)"
+    },
+    {
+      "tc_id": "TC-020e",
+      "status": "pass",
+      "notes": "✔ TC-020e: computeStackPosition iterates openCards to find next vertical slot (0.024458ms)"
+    },
+    {
+      "tc_id": "TC-020f",
+      "status": "pass",
+      "notes": "✔ TC-020f: stack position clamped so card stays within viewport bottom (0.023625ms)"
+    },
+    {
+      "tc_id": "TC-E2E-AC-001h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-AC-001h:\" to be auto-detected. Likely requires browser or integration environment."
+    },
+    {
+      "tc_id": "TC-E2E-AC-002h",
+      "status": "skip",
+      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-AC-002h:\" to be auto-detected. Likely requires browser or integration environment."
+    }
+  ],
+  "fr_coverage": [
+    {
+      "fr_id": "FR-013",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 3,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-014",
+      "tests_passing": 3,
+      "tests_failing": 0,
+      "tests_skipped": 0,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-015",
+      "tests_passing": 3,
+      "tests_failing": 0,
+      "tests_skipped": 0,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-016",
+      "tests_passing": 3,
+      "tests_failing": 0,
+      "tests_skipped": 0,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-017",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 2,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-018",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 3,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-019",
+      "tests_passing": 1,
+      "tests_failing": 0,
+      "tests_skipped": 3,
+      "status": "covered"
+    },
+    {
+      "fr_id": "FR-020",
+      "tests_passing": 3,
+      "tests_failing": 0,
+      "tests_skipped": 0,
+      "status": "covered"
+    }
+  ],
+  "summary": {
+    "total": 27,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 11,
+    "skipped_e2e": 11,
+    "skipped_no_marker": 0
+  }
+}

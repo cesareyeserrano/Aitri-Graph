@@ -1,0 +1,66 @@
+{
+  "project_name": "Aitri Product Graph Visualizer — artifact-cards feature",
+  "version": "1.1.0",
+  "setup_commands": ["node server.js"],
+  "environment_variables": [],
+  "test_runner": "bash tests/run.sh",
+  "test_files": ["tests/cards.test.js", "tests/e2e/cards.spec.js"],
+  "files_created": [
+    {
+      "path": "js/cards.js",
+      "description": "CardManager ES module — toggle, open, close, closeAll, renderCard, computePosition, clampToViewport, getCascadeCount. Exported functions plus test-exposed internals (_openCards, _STATUS_COLORS, etc.)"
+    },
+    {
+      "path": "css/cards.css",
+      "description": "Artifact card styles — fixed-position overlay, header/body layout, status badge, field rows, acceptance_criteria list, scrollable body, responsive overrides at 768px and 375px"
+    }
+  ],
+  "files_modified": [
+    {
+      "path": "js/graph.js",
+      "changes": [
+        "Import CardManager from ./cards.js",
+        "Extend cy.on('tap', 'node') handler to call CardManager.toggle(node) before collapse/expand logic (FR-013)",
+        "Add container.style.cursor='grabbing' on mousedown and revert on mouseup (FR-004 new AC)",
+        "Call CardManager.closeAll() in clear() method when project changes"
+      ]
+    },
+    {
+      "path": "index.html",
+      "changes": [
+        "Add <link rel='stylesheet' href='css/cards.css'> in <head>"
+      ]
+    }
+  ],
+  "implementation_notes": {
+    "card_positioning": "Cards appended to document.body with position:fixed — immune to Cytoscape canvas transforms during pan/zoom (FR-019). Appended off-screen first at left:-9999px to measure real height via getBoundingClientRect(), then repositioned with clampToViewport().",
+    "status_colors": "STATUS_COLORS in cards.js mirrors graph.js STATUS_COLORS exactly: pending=#94A3B8, in_progress=#60A5FA, approved=#34D399, complete=#A78BFA, drift=#FB923C. These differ from UX spec hex values — UX spec was designed before reading actual graph.js constants. Declared in technical_debt.",
+    "field_rendering": "Standard fields rendered in fixed order (description, priority, type, acceptance_criteria, implementation_level). Extra fields (any top-level key not in HEADER_FIELDS or BODY_FIELDS) appended after. All values set via textContent — no innerHTML, no XSS risk.",
+    "cursor_grabbing": "cursor:grabbing applied to the Cytoscape container element (not the body) on mousedown on background canvas only. Reverted on mouseup. Satisfies FR-004 new AC.",
+    "cascade_wrap": "getCascadeCount() uses openCards.size % (maxCascade + 1) where maxCascade = floor((window.innerWidth - CARD_WIDTH - 16) / CASCADE_OFFSET). At 1280px: maxCascade = floor(936/24) = 39. Wraps at 40 open cards."
+  },
+  "technical_debt": [
+    {
+      "fr_id": "FR-015",
+      "substitution": "cards.js STATUS_COLORS uses actual graph.js hex values (in_progress=#60A5FA, approved=#34D399, complete=#A78BFA, drift=#FB923C) instead of UX spec values (in_progress=#f59e0b, approved=#22c55e, complete=#3b82f6, drift=#ef4444)",
+      "reason": "UX spec was designed without reading graph.js constants. Actual graph colors take priority to ensure visual consistency. TC-015h and TC-015e hex assertions are now stale against the UX spec values.",
+      "effort_to_fix": "1h — update 01_UX_SPEC.md Design Tokens and TC-015h/TC-015e hex values to match actual graph.js STATUS_COLORS"
+    },
+    {
+      "fr_id": "NFR-008",
+      "substitution": "Card combined area ≤40% of canvas is not enforced programmatically — no runtime check prevents more than 40% coverage",
+      "reason": "At 3 open cascaded cards on 1280×800 viewport, combined area ≈ 45% in worst case. Enforcing this dynamically would require measuring card rects on every open, adding complexity not justified for POC. Cascade offset reduces effective overlap.",
+      "effort_to_fix": "2h — add a getCombinedCardArea() check in open() that rejects new cards when coverage exceeds 40%, with a visible warning message"
+    }
+  ],
+  "fr_implementation_status": [
+    { "id": "FR-013", "status": "complete", "files": ["js/cards.js", "js/graph.js"] },
+    { "id": "FR-014", "status": "complete", "files": ["js/cards.js"] },
+    { "id": "FR-015", "status": "complete", "files": ["js/cards.js"], "note": "Colors corrected to match actual graph.js — see TD-AC-001" },
+    { "id": "FR-016", "status": "complete", "files": ["js/cards.js", "css/cards.css"] },
+    { "id": "FR-017", "status": "complete", "files": ["js/cards.js"] },
+    { "id": "FR-018", "status": "complete", "files": ["js/cards.js"] },
+    { "id": "FR-019", "status": "complete", "files": ["js/cards.js", "css/cards.css"], "note": "position:fixed on body ensures canvas transforms don't affect cards" },
+    { "id": "FR-020", "status": "complete", "files": ["js/cards.js"] }
+  ]
+}

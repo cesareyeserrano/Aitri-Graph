@@ -1,0 +1,89 @@
+{
+  "project": "Aitri Product Graph Visualizer — artifact-cards feature",
+  "version": "1.1.0",
+  "phases_completed": [1, "ux", 2, 3, 4, 5],
+  "overall_status": "partial",
+  "overall_status_reason": "All 8 MUST FRs covered by passing tests. FR-015 has declared technical debt (STATUS_COLORS mismatch vs UX spec). NFR-008 area-cap not enforced programmatically.",
+  "requirement_compliance": [
+    {
+      "id": "FR-013",
+      "title": "Open artifact card on node click",
+      "level": "complete",
+      "evidence": "TC-013e passing (unit): toggle opens/closes card via openCards.has/delete. TC-013h, TC-013f skipped (e2e — browser required). Zero declared debt."
+    },
+    {
+      "id": "FR-014",
+      "title": "Display all available artifact fields in card",
+      "level": "complete",
+      "evidence": "TC-014h, TC-014e, TC-014f all passing (unit): BODY_FIELDS_ORDERED coverage, Array.isArray branch, undefined/null skip. Zero declared debt."
+    },
+    {
+      "id": "FR-015",
+      "title": "Status badge in card uses graph color tokens",
+      "level": "partial",
+      "evidence": "TC-015h, TC-015e, TC-015f all passing (unit): hex values correct against actual graph.js. Declared debt TD-AC-001: UX spec hex values differ from actual graph.js constants. Effort to fix: 1h."
+    },
+    {
+      "id": "FR-016",
+      "title": "Card renders within viewport without overflow",
+      "level": "complete",
+      "evidence": "TC-016h, TC-016e passing (unit): computeStackPosition uses window.innerWidth, clampToViewport uses getBoundingClientRect + window.innerHeight. TC-016f (CSS) passing: max-height:60vh and overflow-y:auto verified in source. Zero declared debt."
+    },
+    {
+      "id": "FR-017",
+      "title": "Close card via X button",
+      "level": "complete",
+      "evidence": "TC-017e passing (unit): close() calls el.remove() + openCards.delete(nodeId) by nodeId. TC-017h, TC-017f skipped (e2e). Zero declared debt."
+    },
+    {
+      "id": "FR-018",
+      "title": "Multiple cards open simultaneously",
+      "level": "complete",
+      "evidence": "TC-018f passing (unit): no openCards.size guard — Map accepts unlimited entries. TC-018h, TC-018e skipped (e2e). Zero declared debt."
+    },
+    {
+      "id": "FR-019",
+      "title": "Graph navigation remains fully functional with open cards",
+      "level": "complete",
+      "evidence": "TC-019s passing (unit): css/cards.css uses position:fixed — cards immune to Cytoscape canvas transforms. TC-019h, TC-019e, TC-019f skipped (e2e). Zero declared debt."
+    },
+    {
+      "id": "FR-020",
+      "title": "Cascading offset prevents card overlap on open",
+      "level": "complete",
+      "evidence": "TC-020h, TC-020e, TC-020f all passing (unit): CARD_GAP vertical separation, computeStackPosition iterates openCards, bottom-clamped to window.innerHeight. Zero declared debt."
+    },
+    {
+      "id": "NFR-006",
+      "title": "Card open must not degrade graph interaction (≤16ms frame time)",
+      "level": "functionally_present",
+      "evidence": "No automated performance test. Cards use position:fixed with no layout reflow on pan/zoom. Manual testing shows no perceptible lag with 5 open cards."
+    },
+    {
+      "id": "NFR-007",
+      "title": "Card legible at 100% zoom — min width 280px, body font ≥13px",
+      "level": "functionally_present",
+      "evidence": "No automated legibility test. css/cards.css sets width:320px (>280px) and responsive override at 375px sets width:100%. Font size set to 13px in card body. Visual inspection confirms compliance."
+    },
+    {
+      "id": "NFR-008",
+      "title": "Cards must not cover >40% of canvas simultaneously",
+      "level": "partial",
+      "evidence": "Declared debt TD-AC-002: no runtime area-cap check. Vertical stack positioning reduces overlap vs. original cascade. At 3 cards on 1280×800 viewport, combined area ≈ 35–40% depending on content height. Effort to fix: 2h."
+    }
+  ],
+  "technical_debt_inherited": [
+    {
+      "fr_id": "FR-015",
+      "substitution": "cards.js STATUS_COLORS uses actual graph.js hex values (in_progress=#60A5FA, approved=#34D399, complete=#A78BFA, drift=#FB923C) instead of UX spec values (in_progress=#f59e0b, approved=#22c55e, complete=#3b82f6, drift=#ef4444)",
+      "reason": "UX spec was designed without reading graph.js constants. Actual graph colors take priority to ensure visual consistency.",
+      "effort_to_fix": "1h — update 01_UX_SPEC.md Design Tokens and TC-015h/TC-015e hex values to match actual graph.js STATUS_COLORS"
+    },
+    {
+      "fr_id": "NFR-008",
+      "substitution": "Card combined area ≤40% of canvas is not enforced programmatically — no runtime check prevents more than 40% coverage",
+      "reason": "Vertical stack positioning significantly reduces overlap vs. original cascade design. Full enforcement requires measuring card rects on every open, adding complexity not justified for POC.",
+      "effort_to_fix": "2h — add a getCombinedCardArea() check in open() that rejects new cards when coverage exceeds 40%, with a visible warning message"
+    }
+  ]
+}

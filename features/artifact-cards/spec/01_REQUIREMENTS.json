@@ -1,0 +1,300 @@
+{
+  "project_name": "Aitri Product Graph Visualizer — artifact-cards feature",
+  "project_summary": "Adds floating detail cards to the graph. Clicking any node opens a card showing all the artifact's fields (id, title, description, priority, type, acceptance_criteria, implementation_level, status, and any additional fields present in the JSON), with a status badge consistent with the existing graph legend. Multiple cards can be open simultaneously. Cards stay within the viewport, never overlap each other on open, and do not block graph navigation.",
+  "product_analysis": {
+    "north_star_kpi": "User reads a complete artifact (all fields) within 5 seconds of clicking its node, without leaving the graph view",
+    "jtbd": "When reviewing a project's spec pipeline, the PM/developer hires this feature to read the full content of any artifact inline — without opening any file or losing their place in the graph",
+    "guardrail_metric": "Opening a card must not affect graph render time or interaction latency — pan, zoom, and expand/collapse must remain responsive (≤16ms frame time) with up to 5 cards open"
+  },
+  "no_go_zone": [
+    "No editing of artifact fields from the card — the card is read-only",
+    "No persistence of card state between sessions — cards do not reopen on page reload",
+    "No mobile or small-viewport support — desktop only (≥1280px), consistent with parent project constraint",
+    "No replacement of the existing hover tooltip — tooltip (FR-007) continues to function independently",
+    "No drag-to-reposition of cards — cards open at a fixed computed offset and stay there"
+  ],
+  "user_personas": [
+    {
+      "role": "Product Manager",
+      "tech_level": "mid",
+      "goal": "Read the full acceptance criteria and status of a Feature or User Story during a sprint review without opening any file",
+      "pain_point": "Tooltip shows only id/title/status — not enough to answer 'what exactly does this FR require?' without opening the JSON"
+    },
+    {
+      "role": "Developer / Tech Lead",
+      "tech_level": "high",
+      "goal": "Inspect the implementation_level and acceptance_criteria of multiple Test Cases side by side while tracing a dependency chain",
+      "pain_point": "Must switch between graph view and file editor to read full artifact content, breaking the visual context"
+    }
+  ],
+  "functional_requirements": [
+    {
+      "id": "FR-013",
+      "title": "Open artifact card on node click",
+      "description": "Clicking a node in the graph opens a floating card anchored near that node. The card is independent of the expand/collapse behavior — clicking a node with children opens the card AND toggles collapse/expand. The card appears within 300ms of the click event.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given any node in the graph, when the user clicks it, then a card element appears in the DOM within 300ms with the node's artifact data",
+        "Given a card is already open for node A, when the user clicks node A again, then the card for node A closes (toggle behavior)",
+        "Given a parent node with children, when the user clicks it, then both the card opens AND the expand/collapse toggle fires — neither action suppresses the other"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-014",
+      "title": "Display all available artifact fields in card",
+      "description": "The card renders every field present in the artifact's source JSON. Required fields: id, title, description, priority, type, status. Conditional fields (rendered only if present): acceptance_criteria (as a list), implementation_level, dependencies, and any additional top-level keys in the JSON object.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given an artifact with fields id, title, description, priority, type, status, and acceptance_criteria, when the card is opened, then all 7 fields are visible in the card without scrolling for a card height ≤ 60% of the viewport",
+        "Given an artifact whose acceptance_criteria is an array of 3 strings, when the card renders, then each string appears as a separate list item (not concatenated)",
+        "Given an artifact with an additional field not in the standard set (e.g. 'implementation_notes'), when the card renders, then that field and its value are displayed",
+        "Given an artifact with no description field, when the card renders, then the description section is absent (no empty label or blank row)"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-015",
+      "title": "Status badge in card uses graph color tokens",
+      "description": "The card displays the artifact's status as a labeled badge. The badge color for each status (pending, in_progress, approved, complete, drift) must be identical to the color used for that status in the graph nodes and the existing legend (FR-002).",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given a node with status 'approved' and its open card, when both are visible simultaneously, then the color of the status badge in the card matches the color of the status indicator on the node (same hex value)",
+        "Given all 5 statuses (pending, in_progress, approved, complete, drift), when each is shown in a card badge, then each badge uses a unique color distinct from the other 4",
+        "Given a status badge in the card, when measured, then the contrast ratio between the badge text color and badge background is ≥4.5:1"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-016",
+      "title": "Card renders within viewport without overflow",
+      "description": "When a card opens, its position is computed so that no part of the card extends beyond the browser viewport edges. If the default anchor position (near the node) would cause overflow, the card is repositioned to stay fully visible.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given a node positioned in the top-right quadrant of the viewport, when its card opens, then the card's right edge does not exceed window.innerWidth and the card's top edge does not go above 0px",
+        "Given a node positioned at the bottom edge of the viewport, when its card opens, then the card's bottom edge does not exceed window.innerHeight",
+        "Given a card whose computed content height exceeds 60% of window.innerHeight, when rendered, then the card body becomes scrollable and the card height is capped at 60% of window.innerHeight"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-017",
+      "title": "Close card via X button",
+      "description": "Each card has a visible close button (X) in its header. Clicking X removes the card from the DOM. Closing a card does not affect any other open cards or the graph state.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given an open card, when the user clicks the X button, then the card is removed from the DOM within 200ms",
+        "Given two open cards A and B, when the user clicks the X on card A, then card B remains open and unchanged",
+        "Given an open card, when the user closes it via X, then the graph layout, zoom level, and pan position are unchanged"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-018",
+      "title": "Multiple cards open simultaneously",
+      "description": "There is no limit on how many cards can be open at the same time. Each card is independent — opening, closing, or scrolling one card does not affect others.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given 3 nodes clicked in sequence, when all 3 cards are open, then all 3 are visible in the DOM simultaneously with their respective artifact data",
+        "Given 3 open cards, when the user scrolls the content of card B, then cards A and C are unaffected",
+        "Given 5 open cards, when the user opens a 6th, then all 6 cards are present in the DOM"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-019",
+      "title": "Graph navigation remains fully functional with open cards",
+      "description": "Pan, zoom, and expand/collapse on the graph canvas must work exactly as without cards. Open cards are overlaid on the canvas and do not capture pointer events intended for the graph.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given 1 or more open cards, when the user drags an empty area of the canvas, then the graph pans as expected and no card moves with the graph",
+        "Given 1 or more open cards, when the user scrolls the mouse wheel over the canvas (not over a card), then the graph zooms and the cards remain at their fixed screen positions",
+        "Given 1 or more open cards, when the user clicks a node to expand/collapse, then the collapse fires and the card for that node (if open) remains open"
+      ],
+      "implementation_level": "functional"
+    },
+    {
+      "id": "FR-020",
+      "title": "Cascading offset prevents card overlap on open",
+      "description": "When a new card opens and would overlap an already-open card, the new card is offset by a fixed increment (≥20px horizontal and ≥20px vertical) relative to the previous card's position. This ensures cards are distinguishable at a glance without manual repositioning.",
+      "priority": "MUST",
+      "type": "UX",
+      "acceptance_criteria": [
+        "Given one open card at position (left: 100px, top: 80px), when a second card opens, then its position is offset by ≥20px in at least one axis from the first card's position",
+        "Given two open cards with a 20px cascade offset, when a third card opens, then it is offset ≥20px from the second card (not from the first)",
+        "Given a cascaded position that would push the card outside the viewport, when the card opens, then the offset resets to the initial anchor position (wraps around) rather than overflowing"
+      ],
+      "implementation_level": "functional"
+    }
+  ],
+  "user_stories": [
+    {
+      "id": "US-013",
+      "requirement_id": "FR-013",
+      "as_a": "Product Manager",
+      "i_want": "to click a node and see its detail card open immediately",
+      "so_that": "I can read the full artifact content without leaving the graph",
+      "acceptance_criteria": [
+        {
+          "id": "AC-013-01",
+          "given": "a rendered graph with any node visible",
+          "when": "the user clicks the node",
+          "then": "a card element appears in the DOM within 300ms containing the node's artifact id and title"
+        },
+        {
+          "id": "AC-013-02",
+          "given": "a card is open for node X",
+          "when": "the user clicks node X again",
+          "then": "the card for node X is removed from the DOM within 200ms"
+        }
+      ]
+    },
+    {
+      "id": "US-014",
+      "requirement_id": "FR-014",
+      "as_a": "Developer / Tech Lead",
+      "i_want": "to see all fields of an artifact in the card",
+      "so_that": "I can read acceptance criteria and implementation_level without opening the JSON file",
+      "acceptance_criteria": [
+        {
+          "id": "AC-014-01",
+          "given": "an artifact with acceptance_criteria containing 3 items",
+          "when": "the card is opened",
+          "then": "each acceptance criterion is displayed as a separate list item in the card"
+        },
+        {
+          "id": "AC-014-02",
+          "given": "an artifact with no description field",
+          "when": "the card is opened",
+          "then": "no empty description row or label appears in the card"
+        }
+      ]
+    },
+    {
+      "id": "US-015",
+      "requirement_id": "FR-015",
+      "as_a": "Product Manager",
+      "i_want": "the status badge in the card to match the graph's status colors",
+      "so_that": "I get a consistent visual language without having to learn two color systems",
+      "acceptance_criteria": [
+        {
+          "id": "AC-015-01",
+          "given": "a node with status 'drift' visible in the graph",
+          "when": "the card is opened",
+          "then": "the status badge in the card uses the same hex color as the drift indicator on the node"
+        }
+      ]
+    },
+    {
+      "id": "US-016",
+      "requirement_id": "FR-016",
+      "as_a": "Developer / Tech Lead",
+      "i_want": "cards to always appear fully within the screen",
+      "so_that": "I never have to scroll the page to find a card that opened off-screen",
+      "acceptance_criteria": [
+        {
+          "id": "AC-016-01",
+          "given": "a node at the right edge of the viewport",
+          "when": "its card opens",
+          "then": "the card's right edge is ≤ window.innerWidth (no horizontal overflow)"
+        }
+      ]
+    },
+    {
+      "id": "US-017",
+      "requirement_id": "FR-017",
+      "as_a": "Product Manager",
+      "i_want": "to close a card when I'm done reading it",
+      "so_that": "I can keep the graph area uncluttered",
+      "acceptance_criteria": [
+        {
+          "id": "AC-017-01",
+          "given": "two open cards A and B",
+          "when": "the user clicks the X on card A",
+          "then": "card A is removed from the DOM and card B remains open and unchanged"
+        }
+      ]
+    },
+    {
+      "id": "US-018",
+      "requirement_id": "FR-018",
+      "as_a": "Developer / Tech Lead",
+      "i_want": "to have multiple artifact cards open at the same time",
+      "so_that": "I can compare two User Stories or trace a dependency chain side by side",
+      "acceptance_criteria": [
+        {
+          "id": "AC-018-01",
+          "given": "3 nodes clicked in sequence",
+          "when": "all 3 clicks are complete",
+          "then": "all 3 cards are simultaneously present in the DOM with their respective artifact data"
+        }
+      ]
+    },
+    {
+      "id": "US-019",
+      "requirement_id": "FR-019",
+      "as_a": "Product Manager",
+      "i_want": "to pan and zoom the graph even when cards are open",
+      "so_that": "I can navigate to other nodes without closing my open cards first",
+      "acceptance_criteria": [
+        {
+          "id": "AC-019-01",
+          "given": "2 open cards overlaying the canvas",
+          "when": "the user drags an empty canvas area",
+          "then": "the graph pans and the cards remain at their fixed screen positions (do not move with the graph)"
+        }
+      ]
+    },
+    {
+      "id": "US-020",
+      "requirement_id": "FR-020",
+      "as_a": "Product Manager",
+      "i_want": "new cards to appear offset from existing ones",
+      "so_that": "I can distinguish each card at a glance without them stacking on top of each other",
+      "acceptance_criteria": [
+        {
+          "id": "AC-020-01",
+          "given": "one card already open on screen",
+          "when": "the user opens a second card",
+          "then": "the second card's top-left corner is offset by ≥20px in at least one axis from the first card's top-left corner"
+        }
+      ]
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "NFR-006",
+      "category": "Performance",
+      "requirement": "Opening a card must not degrade graph interaction responsiveness. With up to 5 cards open, pan and zoom frame time must remain ≤16ms.",
+      "acceptance_criteria": "Given 5 open cards, when the user pans or zooms the graph, then the browser renders each frame in ≤16ms (measured via DevTools Performance panel — no dropped frames at 60fps)"
+    },
+    {
+      "id": "NFR-007",
+      "category": "Usability",
+      "requirement": "Card content must be legible at default browser zoom (100%). Minimum card width: 280px. Body text minimum font size: 13px.",
+      "acceptance_criteria": "Given a card rendered at 100% browser zoom on a 1280px viewport, when inspected, then card width is ≥280px and all body text has computed font-size ≥13px"
+    },
+    {
+      "id": "NFR-008",
+      "category": "Usability",
+      "requirement": "Cards must not cover more than 40% of the graph canvas simultaneously (combined area of all open cards vs. canvas area). This preserves graph navigability.",
+      "acceptance_criteria": "Given 3 open cards at their default cascade positions on a 1280×800 viewport, when the combined card area is measured, then it does not exceed 40% of the canvas element's bounding box area"
+    }
+  ],
+  "constraints": [
+    "No new npm dependencies — card rendering must use vanilla JS/CSS only",
+    "Card state is in-memory only — no localStorage, no server persistence",
+    "Cards are fixed-position overlays (CSS position: fixed or absolute relative to viewport) — they do not scroll with the page"
+  ],
+  "technology_preferences": [
+    "Vanilla JS (ES Modules) — consistent with parent project, no framework or build step",
+    "CSS custom properties for status colors — reuse the same tokens already defined for the graph legend"
+  ]
+}

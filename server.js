@@ -5,13 +5,18 @@
  * @aitri-trace FR-ID: FR-009, NFR-005
  */
 import { createServer } from 'http';
-import { readFileSync, existsSync, realpathSync } from 'fs';
-import { join, resolve, extname } from 'path';
+import { readFileSync, existsSync, realpathSync, writeFileSync, mkdirSync } from 'fs';
+import { join, resolve, extname, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { homedir } from 'os';
+import { randomUUID } from 'crypto';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const PORT = process.env.PORT ?? 3000;
 const ROOT = __dirname;
+const GRAPH_DIR      = join(homedir(), '.aitri-graph');
+const REGISTRY_FILE  = join(GRAPH_DIR, 'projects.json');
+const MAX_REGISTRY   = Number(process.env.AITRI_GRAPH_MAX_PROJECTS ?? 50);
 
 // ── Rate limiting (per IP, /api/project only) ─────────────────────
 const RATE_LIMIT_MAX       = 30;
@@ -104,6 +109,98 @@ function handleApiProject(req, res, url) {
   json(res, 200, { name, source: 'local', artifacts: { requirements, testCases, aitriState } });
 }
 
+// ── Registry helpers ──────────────────────────────────────────────
+
+function readRegistry() {
+  try {
+    if (!existsSync(REGISTRY_FILE)) return { projects: [] };
+    return JSON.parse(readFileSync(REGISTRY_FILE, 'utf8'));
+  } catch { return { projects: [] }; }
+}
+
+function writeRegistry(registry) {
+  mkdirSync(GRAPH_DIR, { recursive: true });
+  writeFileSync(REGISTRY_FILE, JSON.stringify(registry, null, 2));
+}
+
+/**
+ * GET /api/registry — return persisted project list.
+ */
+function handleRegistryGet(_req, res) {
+  json(res, 200, readRegistry());
+}
+
+/**
+ * POST /api/registry — add a project entry.
+ * Body: { url: string, name: string, source: 'local'|'github'|'demo' }
+ */
+function handleRegistryPost(req, res) {
+  let body = '';
+  req.on('data', chunk => { body += chunk; });
+  req.on('end', () => {
+    let payload;
+    try { payload = JSON.parse(body); } catch {
+      return json(res, 400, { error: 'Invalid JSON body' });
+    }
+    const { url, name, source } = payload ?? {};
+    if (!url || typeof url !== 'string') return json(res, 400, { error: 'Missing field: url' });
+    if (!name || typeof name !== 'string') return json(res, 400, { error: 'Missing field: name' });
+    if (!['local', 'github', 'demo'].includes(source)) return json(res, 400, { error: 'Invalid source' });
+
+    const registry = readRegistry();
+    if (!Array.isArray(registry.projects)) registry.projects = [];
+    // Deduplicate by url
+    if (registry.projects.some(p => p.url === url)) {
+      return json(res, 200, registry.projects.find(p => p.url === url));
+    }
+    if (registry.projects.length >= MAX_REGISTRY) {
+      return json(res, 409, { error: `Registry full (max ${MAX_REGISTRY} projects)` });
+    }
+    const project = { id: randomUUID(), url, name, source, addedAt: new Date().toISOString() };
+    registry.projects.push(project);
+    writeRegistry(registry);
+    json(res, 201, project);
+  });
+}
+
+/**
+ * DELETE /api/registry/:id — remove a project by id.
+ */
+function handleRegistryDelete(req, res, id) {
+  if (!id) return json(res, 400, { error: 'Missing project id' });
+  const registry = readRegistry();
+  const before = registry.projects.length;
+  registry.projects = (registry.projects ?? []).filter(p => p.id !== id);
+  if (registry.projects.length === before) return json(res, 404, { error: 'Project not found' });
+  writeRegistry(registry);
+  json(res, 200, { ok: true });
+}
+
+/**
+ * GET /api/project/status?path=<dir>
+ * Lightweight endpoint: returns only { updatedAt, currentPhase } from .aitri.
+ * Used by the frontend polling loop to detect pipeline changes without a full reload.
+ */
+function handleProjectStatus(_req, res, url) {
+  const projectPath = url.searchParams.get('path');
+  if (!projectPath) return json(res, 400, { error: 'Missing path' });
+  if (projectPath.includes('..')) return json(res, 400, { error: 'Path traversal not allowed' });
+  if (!projectPath.startsWith('/')) return json(res, 400, { error: 'Path must be absolute' });
+
+  const aitriFile = join(projectPath, '.aitri');
+  if (!existsSync(aitriFile)) return json(res, 404, { error: '.aitri not found' });
+
+  try {
+    const raw = JSON.parse(readFileSync(aitriFile, 'utf8'));
+    json(res, 200, {
+      updatedAt:    raw.updatedAt    ?? null,
+      currentPhase: raw.currentPhase ?? 0,
+    });
+  } catch {
+    json(res, 422, { error: 'Could not parse .aitri' });
+  }
+}
+
 function handleStatic(_req, res, pathname) {
   if (pathname === '/') pathname = '/index.html';
   const safePath = resolve(ROOT, '.' + pathname);
@@ -128,8 +225,12 @@ const server = createServer((req, res) => {
   res.on('finish', () => {
     console.log(`${new Date().toISOString()} ${req.method} ${url.pathname} ${res.statusCode}`);
   });
-  if (req.method === 'GET' && url.pathname === '/api/project') {
-    return handleApiProject(req, res, url);
+  if (req.method === 'GET'    && url.pathname === '/api/project')        return handleApiProject(req, res, url);
+  if (req.method === 'GET'    && url.pathname === '/api/project/status') return handleProjectStatus(req, res, url);
+  if (req.method === 'GET'    && url.pathname === '/api/registry')       return handleRegistryGet(req, res);
+  if (req.method === 'POST'   && url.pathname === '/api/registry')       return handleRegistryPost(req, res);
+  if (req.method === 'DELETE' && url.pathname.startsWith('/api/registry/')) {
+    return handleRegistryDelete(req, res, url.pathname.slice('/api/registry/'.length));
   }
   handleStatic(req, res, url.pathname);
 });

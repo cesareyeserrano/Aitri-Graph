@@ -5,13 +5,104 @@
 
 import {
   getProjects, getActiveProject, addProject, removeProject,
-  setActiveProject, validateProjectInput, on, emit,
+  setActiveProject, validateProjectInput, on, emit, syncFromServerRegistry,
 } from './app.js';
 import { loadProject, LoadError } from './loader.js';
 import { normalize } from './normalizer.js';
 
 let graphController = null;
 let currentProjectId = null;
+
+// ── Change detection polling ──────────────────────────────────────
+
+const POLL_INTERVAL_MS        = 30_000;  // local projects
+const GITHUB_POLL_INTERVAL_MS = 60_000;  // GitHub projects (conservative — public API)
+
+// Local polling state
+let _pollTimer      = null;
+let _pollUpdatedAt  = null;
+let _pollProjectUrl = null;
+
+// GitHub polling state
+let _ghPollTimer    = null;
+let _ghPollUpdatedAt = null;
+let _ghPollBranch   = null;
+
+function startPolling(project) {
+  stopPolling();
+  if (project.source === 'local') {
+    _pollProjectUrl = project.url;
+    _pollUpdatedAt  = null;
+    _pollTimer = setInterval(() => pollProject(project), POLL_INTERVAL_MS);
+  } else if (project.source === 'github') {
+    _ghPollUpdatedAt = null;
+    _ghPollBranch    = null;
+    _ghPollTimer = setInterval(() => pollGitHubProject(project), GITHUB_POLL_INTERVAL_MS);
+  }
+}
+
+function stopPolling() {
+  if (_pollTimer)   { clearInterval(_pollTimer);   _pollTimer   = null; }
+  if (_ghPollTimer) { clearInterval(_ghPollTimer); _ghPollTimer = null; }
+  _pollProjectUrl  = null;
+  _pollUpdatedAt   = null;
+  _ghPollUpdatedAt = null;
+  _ghPollBranch    = null;
+}
+
+async function pollProject(project) {
+  if (document.visibilityState === 'hidden') return;
+  try {
+    const res = await fetch(`/api/project/status?path=${encodeURIComponent(project.url)}`);
+    if (!res.ok) return;
+    const { updatedAt } = await res.json();
+    if (!updatedAt) return;
+    if (_pollUpdatedAt === null) { _pollUpdatedAt = updatedAt; return; } // baseline
+    if (updatedAt !== _pollUpdatedAt) {
+      _pollUpdatedAt = updatedAt;
+      await loadAndRender(project);
+    }
+  } catch { /* server unreachable — keep polling silently */ }
+}
+
+function parseGitHubRef(url) {
+  const m = url.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?(?:[/#?]|$)/);
+  return m ? { owner: m[1], repo: m[2] } : null;
+}
+
+async function pollGitHubProject(project) {
+  if (document.visibilityState === 'hidden') return;
+  const ref = parseGitHubRef(project.url);
+  if (!ref) return;
+
+  // Resolve branch once, cache in _ghPollBranch.
+  if (!_ghPollBranch) {
+    for (const branch of ['main', 'master']) {
+      try {
+        const res = await fetch(
+          `https://raw.githubusercontent.com/${ref.owner}/${ref.repo}/${branch}/.aitri`
+        );
+        if (res.ok) { _ghPollBranch = branch; break; }
+      } catch { /* try next */ }
+    }
+    if (!_ghPollBranch) return; // repo not found or no .aitri
+  }
+
+  try {
+    const res = await fetch(
+      `https://raw.githubusercontent.com/${ref.owner}/${ref.repo}/${_ghPollBranch}/.aitri`
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    const updatedAt = data.updatedAt ?? null;
+    if (!updatedAt) return;
+    if (_ghPollUpdatedAt === null) { _ghPollUpdatedAt = updatedAt; return; } // baseline
+    if (updatedAt !== _ghPollUpdatedAt) {
+      _ghPollUpdatedAt = updatedAt;
+      await loadAndRender(project);
+    }
+  } catch { /* rate-limited or network error — keep polling silently */ }
+}
 
 // ── Init ──────────────────────────────────────────────────────────
 
@@ -50,6 +141,7 @@ export function initSidebar(gc) {
   on('project:removed', ({ wasActive }) => {
     renderProjectList();
     if (wasActive) {
+      stopPolling();
       currentProjectId = null;
       if (graphController) graphController.clear();
       showCanvasState('empty');
@@ -58,19 +150,23 @@ export function initSidebar(gc) {
     }
   });
 
-  // Render initial state
-  renderProjectList();
+  // Sync from server registry first, then render
+  syncFromServerRegistry().then(() => {
+    renderProjectList();
+    // Restore active project if any
+    const active = getActiveProject();
+    if (active) {
+      currentProjectId = active.id;
+      loadAndRender(active);
+    } else {
+      showCanvasState('empty');
+      updateLegend(false);
+      updateControls(false);
+    }
+  });
 
-  // Restore active project if any
-  const active = getActiveProject();
-  if (active) {
-    currentProjectId = active.id;
-    loadAndRender(active);
-  } else {
-    showCanvasState('empty');
-    updateLegend(false);
-    updateControls(false);
-  }
+  // Re-render sidebar if server sync added new projects
+  on('registry:synced', () => renderProjectList());
 }
 
 // ── Project List ──────────────────────────────────────────────────
@@ -153,6 +249,7 @@ function createProjectItem(project) {
  */
 function selectProject(project) {
   if (currentProjectId === project.id) return; // already selected
+  stopPolling();
   setActiveProject(project.id);
   currentProjectId = project.id;
   renderProjectList();
@@ -179,6 +276,7 @@ async function loadAndRender(project) {
     updateLegend(true);
     updateControls(true);
     setProjectItemState(project.id, 'default');
+    startPolling(project); // start 30s change detection for local projects
   } catch (err) {
     const msg = err instanceof LoadError
       ? err.message

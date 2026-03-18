@@ -120,6 +120,11 @@ export function normalize(artifacts) {
       parentId: epicId,
       dependencies: fr.dependencies ?? [],
       collapsed: false,
+      // Pass through artifact detail fields for card rendering (FR-014)
+      ...(fr.description          !== undefined && { description:          fr.description }),
+      ...(fr.priority             !== undefined && { priority:             fr.priority }),
+      ...(fr.acceptance_criteria  !== undefined && { acceptance_criteria:  fr.acceptance_criteria }),
+      ...(fr.implementation_level !== undefined && { implementation_level: fr.implementation_level }),
     });
   });
 
@@ -138,6 +143,10 @@ export function normalize(artifacts) {
       parentId: us.requirement_id ?? null,
       dependencies: us.dependencies ?? [],
       collapsed: false,
+      // Pass through user story narrative fields for card rendering (FR-014)
+      ...(us.as_a   !== undefined && { as_a:   us.as_a }),
+      ...(us.i_want !== undefined && { i_want: us.i_want }),
+      ...(us.so_that !== undefined && { so_that: us.so_that }),
     });
   });
 

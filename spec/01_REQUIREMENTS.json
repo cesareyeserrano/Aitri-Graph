@@ -79,7 +79,8 @@
       "acceptance_criteria": [
         "Given the rendered graph, when the user clicks and drags an empty canvas area, then the viewport translates in the drag direction",
         "Given a node is clicked without dragging, when the pointer is released in the same position (±3px), then no pan occurs",
-        "Given the user has panned, when the mouse is released, then the graph stays at the new position without snapping back"
+        "Given the user has panned, when the mouse is released, then the graph stays at the new position without snapping back",
+        "Given the rendered graph, when the user holds down the mouse button on the canvas, then the cursor changes to a grabbing hand (cursor: grabbing) for the duration of the drag, and reverts to the default cursor on mouse release"
       ],
       "implementation_level": "functional"
     },

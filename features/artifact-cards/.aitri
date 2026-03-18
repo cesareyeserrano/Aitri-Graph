@@ -1,0 +1,158 @@
+{
+  "currentPhase": 3,
+  "approvedPhases": [
+    1,
+    "ux",
+    2,
+    3,
+    4,
+    5
+  ],
+  "completedPhases": [
+    1,
+    "ux",
+    2,
+    3,
+    4,
+    5
+  ],
+  "projectName": "artifact-cards",
+  "createdAt": "2026-03-17T18:02:33.462Z",
+  "artifactsDir": "spec",
+  "updatedAt": "2026-03-17T22:17:03.291Z",
+  "driftPhases": [],
+  "events": [
+    {
+      "at": "2026-03-17T19:09:22.663Z",
+      "event": "approved",
+      "phase": "ux"
+    },
+    {
+      "at": "2026-03-17T19:09:45.536Z",
+      "event": "started",
+      "phase": 2
+    },
+    {
+      "at": "2026-03-17T19:12:07.281Z",
+      "event": "completed",
+      "phase": 2
+    },
+    {
+      "at": "2026-03-17T19:13:13.298Z",
+      "event": "approved",
+      "phase": 2
+    },
+    {
+      "at": "2026-03-17T19:13:26.236Z",
+      "event": "started",
+      "phase": 3
+    },
+    {
+      "at": "2026-03-17T19:16:24.979Z",
+      "event": "completed",
+      "phase": 3
+    },
+    {
+      "at": "2026-03-17T19:24:54.999Z",
+      "event": "approved",
+      "phase": 3
+    },
+    {
+      "at": "2026-03-17T19:25:07.858Z",
+      "event": "started",
+      "phase": 4
+    },
+    {
+      "at": "2026-03-17T19:32:31.419Z",
+      "event": "completed",
+      "phase": 4
+    },
+    {
+      "at": "2026-03-17T19:34:56.624Z",
+      "event": "approved",
+      "phase": 4
+    },
+    {
+      "at": "2026-03-17T22:12:26.400Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 26
+    },
+    {
+      "at": "2026-03-17T22:13:13.494Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 11
+    },
+    {
+      "at": "2026-03-17T22:13:47.954Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 11
+    },
+    {
+      "at": "2026-03-17T22:15:02.952Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 11
+    },
+    {
+      "at": "2026-03-17T22:15:06.816Z",
+      "event": "verify-complete",
+      "phase": "verify",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "at": "2026-03-17T22:15:13.108Z",
+      "event": "started",
+      "phase": 5
+    },
+    {
+      "at": "2026-03-17T22:16:52.738Z",
+      "event": "completed",
+      "phase": 5
+    },
+    {
+      "at": "2026-03-17T22:16:54.936Z",
+      "event": "approved",
+      "phase": 5
+    },
+    {
+      "at": "2026-03-17T22:17:03.259Z",
+      "event": "completed",
+      "phase": 3
+    },
+    {
+      "at": "2026-03-17T22:17:03.291Z",
+      "event": "approved",
+      "phase": 3
+    }
+  ],
+  "artifactHashes": {
+    "1": "09c7a7cefa0ce4d68f0203369cdabb1a28daab54c61cb37627059d20777ac489",
+    "2": "7fd14379bbbfd82156bd5c65f16f08f2d73467861f8cc559505600a97b60208e",
+    "3": "f6d0fc3dfcbeed6beb147d593cd1366414e8f61687f2dca10e386d6d22ac0d86",
+    "4": "d261bcba3128701ce74a13e5e434d186cd0777a2cf7de4ce79d830605ab291a3",
+    "5": "785057ca51b8071f500fe4ba34df92ed644e941588b0d384349316e9c7640190",
+    "ux": "211452c98fb61d9435bd7a4b42ffe8812f8ad5417fcbdf75c7b2f4209278b0e5"
+  },
+  "verifyPassed": true,
+  "verifyTimestamp": "2026-03-17T22:15:06.815Z",
+  "verifySummary": {
+    "total": 27,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 11,
+    "skipped_e2e": 11,
+    "skipped_no_marker": 0
+  }
+}

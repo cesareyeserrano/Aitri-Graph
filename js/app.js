@@ -57,6 +57,12 @@ export function addProject(url, name, source) {
   registry.projects.push(project);
   saveRegistry(registry);
   emit('project:added', { project });
+  // Sync to server registry async — localStorage is primary; server is persistence backup
+  fetch('/api/registry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, name, source }),
+  }).catch(() => {}); // server may not be running — ignore silently
   return project;
 }
 
@@ -66,11 +72,16 @@ export function addProject(url, name, source) {
 export function removeProject(id) {
   const registry = loadRegistry();
   const wasActive = registry.activeProjectId === id;
+  const project = registry.projects.find(p => p.id === id);
   registry.projects = registry.projects.filter(p => p.id !== id);
   if (wasActive) registry.activeProjectId = null;
   saveRegistry(registry);
   artifactCache.delete(id);
   emit('project:removed', { projectId: id, wasActive });
+  // Sync removal to server registry async
+  if (project) {
+    fetch(`/api/registry/${encodeURIComponent(project.id)}`, { method: 'DELETE' }).catch(() => {});
+  }
 }
 
 /**
@@ -98,6 +109,43 @@ export function setCachedArtifacts(projectId, data) {
 
 export function evictCache(projectId) {
   artifactCache.delete(projectId);
+}
+
+// ── Server Registry Sync ─────────────────────────────────────────
+
+/**
+ * Load projects from the server registry and merge with localStorage.
+ * Server projects that are not in localStorage are added silently.
+ * Call once on app startup (fire-and-forget). Returns a Promise.
+ */
+export async function syncFromServerRegistry() {
+  try {
+    const res = await fetch('/api/registry');
+    if (!res.ok) return;
+    const { projects: serverProjects } = await res.json();
+    if (!Array.isArray(serverProjects) || serverProjects.length === 0) return;
+
+    const registry = loadRegistry();
+    const existingUrls = new Set(registry.projects.map(p => p.url));
+    let added = false;
+    for (const sp of serverProjects) {
+      if (!sp.url || existingUrls.has(sp.url)) continue;
+      registry.projects.push({
+        id: sp.id ?? generateId(),
+        name: sp.name,
+        source: sp.source,
+        url: sp.url,
+        addedAt: sp.addedAt ?? new Date().toISOString(),
+        lastAccessedAt: new Date().toISOString(),
+      });
+      existingUrls.add(sp.url);
+      added = true;
+    }
+    if (added) {
+      saveRegistry(registry);
+      emit('registry:synced', {});
+    }
+  } catch { /* server not running — ignore */ }
 }
 
 // ── Event Bus ────────────────────────────────────────────────────
