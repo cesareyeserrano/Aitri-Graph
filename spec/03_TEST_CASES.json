@@ -1,26 +1,107 @@
 {
   "test_plan": {
-    "strategy": "Three-layer strategy: unit tests for pure JS functions (normalizer, loader validation, store); integration tests for the Node.js server API endpoint; e2e tests via Playwright for all UX/visual FRs and critical user flows. No build step — unit/integration tests run with node --test (Node.js v18 built-in test runner); e2e tests run with Playwright against the live server.",
+    "strategy": "Three-layer strategy: unit tests for pure JS functions (normalizer, loader validation, store); integration tests for the Node.js server API endpoint; e2e tests via Playwright for all UX/visual FRs and critical user flows. No build step \u2014 unit/integration tests run with node --test (Node.js v18 built-in test runner); e2e tests run with Playwright against the live server.",
     "coverage_goal": "80%",
-    "test_types": ["unit", "integration", "e2e"]
+    "test_types": [
+      "unit",
+      "integration",
+      "e2e"
+    ]
   },
   "type_coverage_matrix": [
-    { "fr": "FR-001", "type": "logic",       "unit": "MUST",   "integration": "SHOULD", "e2e": "MUST"  },
-    { "fr": "FR-002", "type": "UX",          "unit": "SHOULD", "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-003", "type": "UX",          "unit": "SHOULD", "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-004", "type": "UX",          "unit": "-",      "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-005", "type": "UX",          "unit": "SHOULD", "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-006", "type": "logic",       "unit": "MUST",   "integration": "SHOULD", "e2e": "MUST"  },
-    { "fr": "FR-007", "type": "UX",          "unit": "-",      "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-008", "type": "logic",       "unit": "MUST",   "integration": "MUST",   "e2e": "SHOULD"},
-    { "fr": "FR-009", "type": "logic",       "unit": "MUST",   "integration": "MUST",   "e2e": "SHOULD"},
-    { "fr": "FR-010", "type": "UX",          "unit": "SHOULD", "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-011", "type": "UX",          "unit": "MUST",   "integration": "-",      "e2e": "MUST"  },
-    { "fr": "FR-012", "type": "UX",          "unit": "-",      "integration": "-",      "e2e": "MUST"  },
-    { "fr": "NFR-005","type": "security",    "unit": "MUST",   "integration": "MUST",   "e2e": "-"     }
+    {
+      "fr": "FR-001",
+      "type": "logic",
+      "unit": "MUST",
+      "integration": "SHOULD",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-002",
+      "type": "UX",
+      "unit": "SHOULD",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-003",
+      "type": "UX",
+      "unit": "SHOULD",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-004",
+      "type": "UX",
+      "unit": "-",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-005",
+      "type": "UX",
+      "unit": "SHOULD",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-006",
+      "type": "logic",
+      "unit": "MUST",
+      "integration": "SHOULD",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-007",
+      "type": "UX",
+      "unit": "-",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-008",
+      "type": "logic",
+      "unit": "MUST",
+      "integration": "MUST",
+      "e2e": "SHOULD"
+    },
+    {
+      "fr": "FR-009",
+      "type": "logic",
+      "unit": "MUST",
+      "integration": "MUST",
+      "e2e": "SHOULD"
+    },
+    {
+      "fr": "FR-010",
+      "type": "UX",
+      "unit": "SHOULD",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-011",
+      "type": "UX",
+      "unit": "MUST",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "FR-012",
+      "type": "UX",
+      "unit": "-",
+      "integration": "-",
+      "e2e": "MUST"
+    },
+    {
+      "fr": "NFR-005",
+      "type": "security",
+      "unit": "MUST",
+      "integration": "MUST",
+      "e2e": "-"
+    }
   ],
   "test_cases": [
-
     {
       "id": "TC-001h",
       "requirement_id": "FR-001",
@@ -30,10 +111,13 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["server.js running on localhost:3000", "data/mock.json contains 2 Epics, 4 Features, 8 User Stories, 8 Test Cases"],
+      "preconditions": [
+        "server.js running on localhost:3000",
+        "data/mock.json contains 2 Epics, 4 Features, 8 User Stories, 8 Test Cases"
+      ],
       "given": "the app is open at http://localhost:3000 and data/mock.json is registered as the active project",
       "when": "the graph finishes loading (canvas loading spinner disappears)",
-      "then": "cy.nodes() returns 22 elements; performance.now() delta from project click to spinner-gone is ≤3000ms",
+      "then": "cy.nodes() returns 22 elements; performance.now() delta from project click to spinner-gone is \u22643000ms",
       "steps": [
         "Open http://localhost:3000",
         "Add project with source 'local' and path pointing to data/mock.json directory",
@@ -41,22 +125,28 @@
         "Wait for canvas loading spinner to disappear",
         "Record timestamp T2",
         "Assert: cy.nodes().length === 22",
-        "Assert: T2 - T1 ≤ 3000"
+        "Assert: T2 - T1 \u2264 3000"
       ],
-      "expected_result": "cy.nodes().length === 22 and elapsed time ≤ 3000ms",
-      "test_data": { "mock_epics": 2, "mock_features": 4, "mock_user_stories": 8, "mock_test_cases": 8 }
+      "expected_result": "cy.nodes().length === 22 and elapsed time \u2264 3000ms",
+      "test_data": {
+        "mock_epics": 2,
+        "mock_features": 4,
+        "mock_user_stories": 8,
+        "mock_test_cases": 8
+      }
     },
-
     {
       "id": "TC-001e",
       "requirement_id": "FR-001",
       "user_story_id": "US-001",
       "ac_id": "AC-002",
-      "title": "normalizer produces correct parent-child hierarchy edges for Epic→Feature→US→TC chain",
+      "title": "normalizer produces correct parent-child hierarchy edges for Epic\u2192Feature\u2192US\u2192TC chain",
       "type": "unit",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["normalizer.js importable as ES module"],
+      "preconditions": [
+        "normalizer.js importable as ES module"
+      ],
       "given": "ArtifactData with requirements.functional_requirements = [{ id:'FR-001', title:'Search' }], requirements.user_stories = [{ id:'US-001', requirement_id:'FR-001' }], testCases.test_cases = [{ id:'TC-001', requirement_id:'FR-001', user_story_id:'US-001' }], aitriState = null",
       "when": "normalize(artifactData) is called",
       "then": "result.edges contains exactly: { source:'EPIC-01', target:'FR-001', edgeType:'hierarchy' }, { source:'FR-001', target:'US-001', edgeType:'hierarchy' }, { source:'US-001', target:'TC-001', edgeType:'hierarchy' }",
@@ -66,10 +156,9 @@
         "Filter result.edges where edgeType === 'hierarchy'",
         "Assert hierarchy edges match the expected 3-edge chain"
       ],
-      "expected_result": "result.edges contains exactly 3 hierarchy edges: EPIC-01→FR-001, FR-001→US-001, US-001→TC-001",
+      "expected_result": "result.edges contains exactly 3 hierarchy edges: EPIC-01\u2192FR-001, FR-001\u2192US-001, US-001\u2192TC-001",
       "test_data": {}
     },
-
     {
       "id": "TC-001f",
       "requirement_id": "FR-001",
@@ -79,10 +168,13 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["server.js running on localhost:3000", "a local project path exists with spec/01_REQUIREMENTS.json containing '{invalid json'"],
+      "preconditions": [
+        "server.js running on localhost:3000",
+        "a local project path exists with spec/01_REQUIREMENTS.json containing '{invalid json'"
+      ],
       "given": "a local directory /tmp/bad-project/spec/01_REQUIREMENTS.json contains the text '{invalid json'",
       "when": "the user adds /tmp/bad-project as a local project and selects it in the sidebar",
-      "then": "the canvas area contains a visible element with text matching /could not parse|parse error/i and length ≥ 10 characters; no uncaught exceptions in browser console",
+      "then": "the canvas area contains a visible element with text matching /could not parse|parse error/i and length \u2265 10 characters; no uncaught exceptions in browser console",
       "steps": [
         "Create /tmp/bad-project/spec/01_REQUIREMENTS.json with content '{invalid json'",
         "Open http://localhost:3000",
@@ -93,10 +185,11 @@
         "Assert: error card text contains 'parse' or 'could not' (case-insensitive)",
         "Assert: browser console has 0 uncaught exceptions"
       ],
-      "expected_result": "Canvas shows error card with text ≥10 chars mentioning parse failure; zero uncaught console errors",
-      "test_data": { "bad_json": "{invalid json" }
+      "expected_result": "Canvas shows error card with text \u226510 chars mentioning parse failure; zero uncaught console errors",
+      "test_data": {
+        "bad_json": "{invalid json"
+      }
     },
-
     {
       "id": "TC-002h",
       "requirement_id": "FR-002",
@@ -106,7 +199,10 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["server running", "mock.json contains nodes with each of the 5 statuses"],
+      "preconditions": [
+        "server running",
+        "mock.json contains nodes with each of the 5 statuses"
+      ],
       "given": "mock.json contains at least one node each with status: pending, in_progress, approved, complete, drift",
       "when": "the graph is rendered for the mock project",
       "then": "each of the 5 status groups has a unique background-color CSS value on its Cytoscape node element; the legend element (data-testid='status-legend') is visible with 5 rows",
@@ -120,35 +216,38 @@
       "expected_result": "5 distinct backgroundColor values for status nodes; legend visible with 5 rows",
       "test_data": {}
     },
-
     {
       "id": "TC-002e",
       "requirement_id": "FR-002",
       "user_story_id": "US-002",
       "ac_id": "AC-003",
-      "title": "Status color tokens meet ≥3:1 contrast ratio against node background",
+      "title": "Status color tokens meet \u22653:1 contrast ratio against node background",
       "type": "unit",
       "scenario": "edge_case",
       "priority": "medium",
-      "preconditions": ["tokens.css is readable"],
+      "preconditions": [
+        "tokens.css is readable"
+      ],
       "given": "CSS token --status-pending=#94A3B8, --status-in-progress=#60A5FA, --status-approved=#34D399, --status-complete=#A78BFA, --status-drift=#FB923C; node background --surface-raised=#1F2937",
       "when": "WCAG contrast ratio is calculated for each status color against #1F2937",
-      "then": "all 5 ratios are ≥3.0:1; specifically: pending=3.8, in_progress=4.1, approved=4.6, complete=4.0, drift=3.9",
+      "then": "all 5 ratios are \u22653.0:1; specifically: pending=3.8, in_progress=4.1, approved=4.6, complete=4.0, drift=3.9",
       "steps": [
         "For each color pair (statusColor, #1F2937), compute relative luminance using WCAG formula",
         "Compute contrast ratio = (L1+0.05)/(L2+0.05) where L1 > L2",
-        "Assert ratio ≥ 3.0 for all 5 pairs"
+        "Assert ratio \u2265 3.0 for all 5 pairs"
       ],
-      "expected_result": "All 5 contrast ratios ≥ 3.0:1",
+      "expected_result": "All 5 contrast ratios \u2265 3.0:1",
       "test_data": {
         "status_colors": {
-          "pending": "#94A3B8", "in_progress": "#60A5FA", "approved": "#34D399",
-          "complete": "#A78BFA", "drift": "#FB923C"
+          "pending": "#94A3B8",
+          "in_progress": "#60A5FA",
+          "approved": "#34D399",
+          "complete": "#A78BFA",
+          "drift": "#FB923C"
         },
         "node_bg": "#1F2937"
       }
     },
-
     {
       "id": "TC-002f",
       "requirement_id": "FR-002",
@@ -170,20 +269,22 @@
       "expected_result": "node.status === 'pending'; function returns without throwing",
       "test_data": {}
     },
-
     {
       "id": "TC-003h",
       "requirement_id": "FR-003",
       "user_story_id": "US-003",
       "ac_id": "AC-004",
-      "title": "Scrolling mouse wheel up 5 times zooms in and node labels stay ≥10px",
+      "title": "Scrolling mouse wheel up 5 times zooms in and node labels stay \u226510px",
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["mock project loaded", "graph rendered with 22 nodes"],
+      "preconditions": [
+        "mock project loaded",
+        "graph rendered with 22 nodes"
+      ],
       "given": "graph is rendered at default zoom level on a 1280px-wide viewport",
       "when": "5 mousewheel scroll-up events (deltaY=-100 each) are dispatched on the canvas element",
-      "then": "cy.zoom() value is strictly greater than the initial zoom value; computed font-size of any visible node label is ≥10px",
+      "then": "cy.zoom() value is strictly greater than the initial zoom value; computed font-size of any visible node label is \u226510px",
       "steps": [
         "Record initial zoom: const z0 = cy.zoom()",
         "Dispatch 5 wheel events with deltaY=-100 on canvas",
@@ -191,23 +292,24 @@
         "Query computed font-size of first visible node label",
         "Assert: parseFloat(fontSize) >= 10"
       ],
-      "expected_result": "cy.zoom() > initial zoom; node label font-size ≥ 10px",
+      "expected_result": "cy.zoom() > initial zoom; node label font-size \u2265 10px",
       "test_data": {}
     },
-
     {
       "id": "TC-003e",
       "requirement_id": "FR-003",
       "user_story_id": "US-003",
       "ac_id": "AC-004",
-      "title": "Clicking + button changes zoom by ≥10% per click",
+      "title": "Clicking + button changes zoom by \u226510% per click",
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "medium",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered at default zoom level; zoom-in (+) button is visible at data-testid='zoom-in'",
       "when": "the zoom-in button is clicked once",
-      "then": "cy.zoom() after click ≥ cy.zoom() before click × 1.10 (i.e. ≥10% increase)",
+      "then": "cy.zoom() after click \u2265 cy.zoom() before click \u00d7 1.10 (i.e. \u226510% increase)",
       "steps": [
         "Record z0 = cy.zoom()",
         "Click [data-testid='zoom-in']",
@@ -217,29 +319,29 @@
       "expected_result": "z1 >= z0 * 1.10",
       "test_data": {}
     },
-
     {
       "id": "TC-003f",
       "requirement_id": "FR-003",
       "user_story_id": "US-003",
       "ac_id": "AC-004",
-      "title": "Edge lines remain ≥1px thick at maximum zoom-out level",
+      "title": "Edge lines remain \u22651px thick at maximum zoom-out level",
       "type": "e2e",
       "scenario": "negative",
       "priority": "medium",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered with at least one hierarchy edge visible",
       "when": "10 scroll-down events (deltaY=+100 each) are dispatched to zoom out maximally",
-      "then": "all Cytoscape edge elements have a computed 'width' style value ≥ 1 (in graph units)",
+      "then": "all Cytoscape edge elements have a computed 'width' style value \u2265 1 (in graph units)",
       "steps": [
         "Dispatch 10 wheel events with deltaY=+100 on canvas",
         "Query cy.edges().map(e => e.style('width'))",
         "Assert: every returned width value >= 1"
       ],
-      "expected_result": "All edge width values ≥ 1 after maximum zoom-out",
+      "expected_result": "All edge width values \u2265 1 after maximum zoom-out",
       "test_data": {}
     },
-
     {
       "id": "TC-004h",
       "requirement_id": "FR-004",
@@ -249,10 +351,12 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered; canvas empty area is visible at coordinates (400, 300) in viewport",
       "when": "mouse is pressed at (400, 300) and dragged to (600, 300) on an empty canvas area (no node underneath)",
-      "then": "cy.pan().x after drag is greater than cy.pan().x before drag by approximately 200px (±20px tolerance)",
+      "then": "cy.pan().x after drag is greater than cy.pan().x before drag by approximately 200px (\u00b120px tolerance)",
       "steps": [
         "Record pan0 = cy.pan()",
         "Simulate mousedown at (400, 300) on canvas",
@@ -261,10 +365,9 @@
         "Record pan1 = cy.pan()",
         "Assert: pan1.x > pan0.x + 180"
       ],
-      "expected_result": "cy.pan().x increases by ≥ 180px",
+      "expected_result": "cy.pan().x increases by \u2265 180px",
       "test_data": {}
     },
-
     {
       "id": "TC-004e",
       "requirement_id": "FR-004",
@@ -274,21 +377,22 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered; an Epic node is at approximately (200, 150) in viewport",
-      "when": "mousedown and mouseup events are dispatched at the same coordinate (200, 150) ±0px (no mousemove)",
-      "then": "cy.pan() value is identical before and after (both x and y within ±1px)",
+      "when": "mousedown and mouseup events are dispatched at the same coordinate (200, 150) \u00b10px (no mousemove)",
+      "then": "cy.pan() value is identical before and after (both x and y within \u00b11px)",
       "steps": [
         "Record pan0 = cy.pan()",
         "Simulate mousedown at (200, 150) on Epic node",
-        "Simulate mouseup at (200, 150) — no mousemove dispatched",
+        "Simulate mouseup at (200, 150) \u2014 no mousemove dispatched",
         "Record pan1 = cy.pan()",
         "Assert: Math.abs(pan1.x - pan0.x) <= 1 && Math.abs(pan1.y - pan0.y) <= 1"
       ],
-      "expected_result": "pan unchanged: |Δx| ≤ 1 and |Δy| ≤ 1",
+      "expected_result": "pan unchanged: |\u0394x| \u2264 1 and |\u0394y| \u2264 1",
       "test_data": {}
     },
-
     {
       "id": "TC-004f",
       "requirement_id": "FR-004",
@@ -298,10 +402,12 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "medium",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered",
       "when": "drag from (300, 300) to (500, 300) and then mouseup is fired; no further interaction for 200ms",
-      "then": "cy.pan().x 200ms after mouseup equals cy.pan().x immediately after mouseup (within ±1px)",
+      "then": "cy.pan().x 200ms after mouseup equals cy.pan().x immediately after mouseup (within \u00b11px)",
       "steps": [
         "Simulate drag from (300,300) to (500,300) and mouseup",
         "Record pan_t0 = cy.pan()",
@@ -309,10 +415,9 @@
         "Record pan_t1 = cy.pan()",
         "Assert: Math.abs(pan_t1.x - pan_t0.x) <= 1"
       ],
-      "expected_result": "pan stable after 200ms: |Δx| ≤ 1",
+      "expected_result": "pan stable after 200ms: |\u0394x| \u2264 1",
       "test_data": {}
     },
-
     {
       "id": "TC-005h",
       "requirement_id": "FR-005",
@@ -322,7 +427,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["mock project loaded; Feature node FR-001 has exactly 3 child User Story nodes (US-001, US-002, US-003) each with 2 Test Cases"],
+      "preconditions": [
+        "mock project loaded; Feature node FR-001 has exactly 3 child User Story nodes (US-001, US-002, US-003) each with 2 Test Cases"
+      ],
       "given": "graph rendered; FR-001 node is expanded (all 3 child US nodes visible); cy.nodes().length === 22",
       "when": "FR-001 node is clicked once",
       "then": "cy.nodes('#US-001, #US-002, #US-003').length === 0 (nodes are removed from graph); FR-001 node has Cytoscape class 'collapsed' applied",
@@ -337,7 +444,6 @@
       "expected_result": "US-001, US-002, US-003 and their TC children absent from cy.nodes(); FR-001 has class 'collapsed'",
       "test_data": {}
     },
-
     {
       "id": "TC-005e",
       "requirement_id": "FR-005",
@@ -347,7 +453,9 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["FR-001 has been collapsed per TC-005h"],
+      "preconditions": [
+        "FR-001 has been collapsed per TC-005h"
+      ],
       "given": "FR-001 node is collapsed (US-001, US-002, US-003 and their TCs are hidden)",
       "when": "FR-001 node is clicked again",
       "then": "cy.nodes('#US-001').length === 1; cy.nodes('#US-002').length === 1; cy.nodes('#US-003').length === 1; cy.nodes().length returns to 22; FR-001 does not have class 'collapsed'",
@@ -362,7 +470,6 @@
       "expected_result": "All 22 nodes restored; FR-001 no longer has class 'collapsed'",
       "test_data": {}
     },
-
     {
       "id": "TC-005f",
       "requirement_id": "FR-005",
@@ -372,7 +479,9 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "medium",
-      "preconditions": ["mock project loaded; a Test Case node TC-001 is visible"],
+      "preconditions": [
+        "mock project loaded; a Test Case node TC-001 is visible"
+      ],
       "given": "graph rendered; TC-001 is a leaf node with no children",
       "when": "TC-001 node is clicked",
       "then": "cy.nodes().length is unchanged (still 22); TC-001 does not have class 'collapsed'; no node is hidden",
@@ -385,7 +494,6 @@
       "expected_result": "Node count unchanged; TC-001 has no 'collapsed' class",
       "test_data": {}
     },
-
     {
       "id": "TC-006h",
       "requirement_id": "FR-006",
@@ -408,7 +516,6 @@
       "expected_result": "Exactly 1 dependency edge: source=US-002, target=US-001, edgeType=dependency",
       "test_data": {}
     },
-
     {
       "id": "TC-006e",
       "requirement_id": "FR-006",
@@ -418,7 +525,9 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["mock project loaded with at least 2 nodes having a declared dependency"],
+      "preconditions": [
+        "mock project loaded with at least 2 nodes having a declared dependency"
+      ],
       "given": "graph rendered; mock.json includes US-002 depending on US-001; both are visible",
       "when": "graph is fully rendered",
       "then": "the edge between US-002 and US-001 has Cytoscape style line-style === 'dashed'; a hierarchy edge between any Feature and its parent has line-style === 'solid'; the two line styles are not equal",
@@ -432,7 +541,6 @@
       "expected_result": "Dependency edge line-style='dashed'; hierarchy edge line-style='solid'",
       "test_data": {}
     },
-
     {
       "id": "TC-006f",
       "requirement_id": "FR-006",
@@ -454,7 +562,6 @@
       "expected_result": "No exception; no edge created for non-existent dependency target",
       "test_data": {}
     },
-
     {
       "id": "TC-007h",
       "requirement_id": "FR-007",
@@ -464,7 +571,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "medium",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "graph is rendered; node FR-001 has title='Search Feature', type='feature', status='approved'",
       "when": "mouseover event is dispatched on the FR-001 Cytoscape node at t=0",
       "then": "within 300ms: element [data-testid='node-tooltip'] is visible in the DOM and contains text 'FR-001', 'Search Feature', 'feature', 'approved'",
@@ -473,7 +582,7 @@
         "Dispatch mouseover on FR-001 node",
         "Poll until [data-testid='node-tooltip'] is visible or 300ms elapsed",
         "Record t1 = performance.now()",
-        "Assert: t1 - t0 ≤ 300",
+        "Assert: t1 - t0 \u2264 300",
         "Assert: tooltip textContent includes 'FR-001'",
         "Assert: tooltip textContent includes 'Search Feature'",
         "Assert: tooltip textContent includes 'feature'",
@@ -482,7 +591,6 @@
       "expected_result": "Tooltip visible within 300ms; contains id='FR-001', title, type='feature', status='approved'",
       "test_data": {}
     },
-
     {
       "id": "TC-007e",
       "requirement_id": "FR-007",
@@ -492,7 +600,9 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "medium",
-      "preconditions": ["mock project loaded; US-002 has dependencies: ['US-001']"],
+      "preconditions": [
+        "mock project loaded; US-002 has dependencies: ['US-001']"
+      ],
       "given": "graph rendered; US-002 node has dependency on US-001",
       "when": "mouseover event is dispatched on US-002 node",
       "then": "tooltip contains text 'US-001' within the dependencies section",
@@ -504,7 +614,6 @@
       "expected_result": "Tooltip text includes 'US-001'",
       "test_data": {}
     },
-
     {
       "id": "TC-007f",
       "requirement_id": "FR-007",
@@ -514,7 +623,9 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "medium",
-      "preconditions": ["tooltip is currently visible on FR-001 node"],
+      "preconditions": [
+        "tooltip is currently visible on FR-001 node"
+      ],
       "given": "tooltip is visible after hovering FR-001 node",
       "when": "mouseout event is dispatched on FR-001 node at t=0",
       "then": "within 500ms: [data-testid='node-tooltip'] is no longer visible (display:none or removed from DOM)",
@@ -524,13 +635,12 @@
         "Dispatch mouseout on FR-001 node",
         "Poll until tooltip is hidden or 500ms elapsed",
         "Record t1 = performance.now()",
-        "Assert: t1 - t0 ≤ 500",
+        "Assert: t1 - t0 \u2264 500",
         "Assert: [data-testid='node-tooltip'] is not visible"
       ],
       "expected_result": "Tooltip hidden within 500ms after mouseout",
       "test_data": {}
     },
-
     {
       "id": "TC-008h",
       "requirement_id": "FR-008",
@@ -550,9 +660,10 @@
         "Assert: result === 'https://raw.githubusercontent.com/cesareyeserrano/Aitri/main/spec/01_REQUIREMENTS.json'"
       ],
       "expected_result": "'https://raw.githubusercontent.com/cesareyeserrano/Aitri/main/spec/01_REQUIREMENTS.json'",
-      "test_data": { "github_url": "https://github.com/cesareyeserrano/Aitri" }
+      "test_data": {
+        "github_url": "https://github.com/cesareyeserrano/Aitri"
+      }
     },
-
     {
       "id": "TC-008e",
       "requirement_id": "FR-008",
@@ -562,7 +673,9 @@
       "type": "integration",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["fetch is mockable (e.g. via global.fetch stub in Node test runner)"],
+      "preconditions": [
+        "fetch is mockable (e.g. via global.fetch stub in Node test runner)"
+      ],
       "given": "fetch stub returns 404 for URLs containing '/main/' and 200 with valid JSON for URLs containing '/master/'",
       "when": "loadProject({ source: 'github', url: 'https://github.com/owner/legacy-repo' }) is called",
       "then": "the function calls fetch with a URL containing '/master/' and returns ArtifactData with requirements populated",
@@ -575,7 +688,6 @@
       "expected_result": "fetch called with /master/ URL; ArtifactData.requirements populated",
       "test_data": {}
     },
-
     {
       "id": "TC-008f",
       "requirement_id": "FR-008",
@@ -585,7 +697,9 @@
       "type": "unit",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["fetch is mockable"],
+      "preconditions": [
+        "fetch is mockable"
+      ],
       "given": "fetch stub returns 404 for both '/main/' and '/master/' URLs",
       "when": "loadProject({ source: 'github', url: 'https://github.com/owner/nonexistent-repo' }) is called",
       "then": "function throws LoadError where error.code === 'NOT_FOUND' and error.message.length >= 10",
@@ -599,7 +713,6 @@
       "expected_result": "LoadError thrown with code='NOT_FOUND' and message.length >= 10",
       "test_data": {}
     },
-
     {
       "id": "TC-009h",
       "requirement_id": "FR-009",
@@ -609,7 +722,10 @@
       "type": "integration",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["server.js running on localhost:3000", "/tmp/test-project/spec/01_REQUIREMENTS.json exists with valid Aitri JSON"],
+      "preconditions": [
+        "server.js running on localhost:3000",
+        "/tmp/test-project/spec/01_REQUIREMENTS.json exists with valid Aitri JSON"
+      ],
       "given": "a directory /tmp/test-project with spec/01_REQUIREMENTS.json containing { project_name: 'Test', functional_requirements: [], user_stories: [] }",
       "when": "GET http://localhost:3000/api/project?path=/tmp/test-project",
       "then": "response status 200; response body is valid JSON with structure { name: string, source: 'local', artifacts: { requirements: object, testCases: null|object, aitriState: null|object } }",
@@ -621,9 +737,10 @@
         "Assert: body.artifacts.requirements.project_name === 'Test'"
       ],
       "expected_result": "status=200; body.source='local'; body.artifacts.requirements is populated",
-      "test_data": { "path": "/tmp/test-project" }
+      "test_data": {
+        "path": "/tmp/test-project"
+      }
     },
-
     {
       "id": "TC-009e",
       "requirement_id": "FR-009",
@@ -633,7 +750,9 @@
       "type": "integration",
       "scenario": "edge_case",
       "priority": "medium",
-      "preconditions": ["server.js running; /tmp/no-tests-project/spec/01_REQUIREMENTS.json exists; no 03_TEST_CASES.json"],
+      "preconditions": [
+        "server.js running; /tmp/no-tests-project/spec/01_REQUIREMENTS.json exists; no 03_TEST_CASES.json"
+      ],
       "given": "/tmp/no-tests-project has spec/01_REQUIREMENTS.json but no spec/03_TEST_CASES.json and no .aitri",
       "when": "GET http://localhost:3000/api/project?path=/tmp/no-tests-project",
       "then": "status 200; body.artifacts.testCases === null; body.artifacts.aitriState === null; body.artifacts.requirements is populated",
@@ -646,7 +765,6 @@
       "expected_result": "status=200; testCases=null; aitriState=null; requirements populated",
       "test_data": {}
     },
-
     {
       "id": "TC-009f",
       "requirement_id": "FR-009",
@@ -656,7 +774,9 @@
       "type": "integration",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["server.js running; /tmp/does-not-exist-xyz does not exist"],
+      "preconditions": [
+        "server.js running; /tmp/does-not-exist-xyz does not exist"
+      ],
       "given": "path /tmp/does-not-exist-xyz does not exist on the filesystem",
       "when": "GET http://localhost:3000/api/project?path=/tmp/does-not-exist-xyz",
       "then": "response status 404; response body is JSON { error: string } where error.length >= 10",
@@ -668,7 +788,6 @@
       "expected_result": "status=404; body.error.length >= 10",
       "test_data": {}
     },
-
     {
       "id": "TC-010h",
       "requirement_id": "FR-010",
@@ -678,7 +797,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["localStorage contains 3 projects: 2 GitHub, 1 local"],
+      "preconditions": [
+        "localStorage contains 3 projects: 2 GitHub, 1 local"
+      ],
       "given": "localStorage key 'aitri-visualizer-projects' contains projects: [{name:'Aitri', source:'github'}, {name:'MyApp', source:'github'}, {name:'LocalPOC', source:'local'}]",
       "when": "page is loaded at http://localhost:3000",
       "then": "sidebar contains exactly 3 [data-testid='project-item'] elements; each shows its name as text; items with source='github' show badge text 'GH'; item with source='local' shows badge text 'LOCAL'",
@@ -692,7 +813,6 @@
       "expected_result": "3 project items; correct name and source badge on each",
       "test_data": {}
     },
-
     {
       "id": "TC-010e",
       "requirement_id": "FR-010",
@@ -702,7 +822,9 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "high",
-      "preconditions": ["2 projects registered; Project A is active with graph rendered"],
+      "preconditions": [
+        "2 projects registered; Project A is active with graph rendered"
+      ],
       "given": "Project A is active (graph visible); Project B is in the sidebar (non-active)",
       "when": "Project B's [data-testid='project-item'] is clicked at t=0",
       "then": "within 3000ms: canvas loading spinner disappears and cy.nodes().length > 0 for Project B's data; Project B's sidebar item has class 'active'; Project A's sidebar item does not have class 'active'",
@@ -719,7 +841,6 @@
       "expected_result": "Graph switches within 3s; Project B active; Project A not active",
       "test_data": {}
     },
-
     {
       "id": "TC-010f",
       "requirement_id": "FR-010",
@@ -729,13 +850,15 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["1 project registered and active with graph rendered"],
+      "preconditions": [
+        "1 project registered and active with graph rendered"
+      ],
       "given": "Project A is the only registered project and is active; graph is rendered (cy.nodes().length > 0)",
-      "when": "the remove (×) button for Project A is clicked and confirmed ('Yes' in confirmation tooltip)",
+      "when": "the remove (\u00d7) button for Project A is clicked and confirmed ('Yes' in confirmation tooltip)",
       "then": "sidebar has 0 [data-testid='project-item'] elements; canvas shows [data-testid='canvas-empty'] element; cy.nodes().length === 0",
       "steps": [
-        "Hover over Project A item to reveal × button",
-        "Click × button",
+        "Hover over Project A item to reveal \u00d7 button",
+        "Click \u00d7 button",
         "Click 'Yes' in confirmation tooltip",
         "Assert: document.querySelectorAll('[data-testid=\"project-item\"]').length === 0",
         "Assert: document.querySelector('[data-testid=\"canvas-empty\"]') is visible",
@@ -744,7 +867,6 @@
       "expected_result": "0 sidebar items; canvas empty state visible; cy.nodes().length === 0",
       "test_data": {}
     },
-
     {
       "id": "TC-011h",
       "requirement_id": "FR-011",
@@ -765,9 +887,10 @@
         "Assert: result.source === 'github'"
       ],
       "expected_result": "{ valid: true, source: 'github' }",
-      "test_data": { "input": "https://github.com/cesareyeserrano/Aitri" }
+      "test_data": {
+        "input": "https://github.com/cesareyeserrano/Aitri"
+      }
     },
-
     {
       "id": "TC-011e",
       "requirement_id": "FR-011",
@@ -787,9 +910,10 @@
         "Assert: result.source === 'local'"
       ],
       "expected_result": "{ valid: true, source: 'local' }",
-      "test_data": { "input": "/Users/cesareyeserrano/Documents/PROJECTS/Drafts/POC" }
+      "test_data": {
+        "input": "/Users/cesareyeserrano/Documents/PROJECTS/Drafts/POC"
+      }
     },
-
     {
       "id": "TC-011f",
       "requirement_id": "FR-011",
@@ -799,7 +923,9 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["app open; add-project form is expanded"],
+      "preconditions": [
+        "app open; add-project form is expanded"
+      ],
       "given": "add-project input field is visible and empty; fetch is monitored via performance observer or request interception",
       "when": "user types 'myproject' into the input field and presses Enter at t=0",
       "then": "within 100ms: [data-testid='form-validation-error'] is visible with textContent.length >= 10; zero fetch/XHR requests have been made",
@@ -815,9 +941,10 @@
         "Assert: intercepted requests count === 0"
       ],
       "expected_result": "Validation error visible within 100ms; no network request made",
-      "test_data": { "invalid_input": "myproject" }
+      "test_data": {
+        "invalid_input": "myproject"
+      }
     },
-
     {
       "id": "TC-012h",
       "requirement_id": "FR-012",
@@ -827,7 +954,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "medium",
-      "preconditions": ["mock project loaded"],
+      "preconditions": [
+        "mock project loaded"
+      ],
       "given": "user has zoomed in (cy.zoom() > 3) and panned so some nodes are off-screen (cy.pan().x < -200)",
       "when": "[data-testid='fit-button'] is clicked at t=0",
       "then": "within 500ms: all nodes have their position within the viewport bounds; cy.elements().filter(':visible').length === cy.nodes().length",
@@ -843,7 +972,6 @@
       "expected_result": "All nodes visible within viewport within 500ms",
       "test_data": {}
     },
-
     {
       "id": "TC-012e",
       "requirement_id": "FR-012",
@@ -853,7 +981,9 @@
       "type": "e2e",
       "scenario": "edge_case",
       "priority": "low",
-      "preconditions": ["mock project loaded at default zoom/pan"],
+      "preconditions": [
+        "mock project loaded at default zoom/pan"
+      ],
       "given": "graph is at default zoom/pan level (all nodes already visible)",
       "when": "[data-testid='fit-button'] is clicked",
       "then": "no exceptions thrown in browser console; cy.nodes().length unchanged; cy.zoom() value is a positive finite number",
@@ -866,7 +996,6 @@
       "expected_result": "No errors; node count unchanged; zoom is positive finite",
       "test_data": {}
     },
-
     {
       "id": "TC-012f",
       "requirement_id": "FR-012",
@@ -876,7 +1005,9 @@
       "type": "e2e",
       "scenario": "negative",
       "priority": "low",
-      "preconditions": ["app open with no project registered"],
+      "preconditions": [
+        "app open with no project registered"
+      ],
       "given": "no project is registered; canvas shows empty state",
       "when": "[data-testid='fit-button'] is inspected",
       "then": "element has attribute disabled or CSS pointer-events:none; clicking it dispatches no cy.fit() call",
@@ -889,7 +1020,6 @@
       "expected_result": "Fit button is disabled; no exception on click",
       "test_data": {}
     },
-
     {
       "id": "TC-NFR005h",
       "requirement_id": "FR-009",
@@ -899,7 +1029,9 @@
       "type": "integration",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["server.js running on localhost:3000"],
+      "preconditions": [
+        "server.js running on localhost:3000"
+      ],
       "given": "server is running",
       "when": "GET http://localhost:3000/api/project?path=../../etc/passwd",
       "then": "response status 400; response body is JSON { error: 'Invalid path: traversal not allowed' }; response body does NOT contain any file content from /etc/passwd",
@@ -910,9 +1042,10 @@
         "Assert: body does not contain 'root:' (content of /etc/passwd)"
       ],
       "expected_result": "status=400; error message='Invalid path: traversal not allowed'; no file content in response",
-      "test_data": { "malicious_path": "../../etc/passwd" }
+      "test_data": {
+        "malicious_path": "../../etc/passwd"
+      }
     },
-
     {
       "id": "TC-NFR005f",
       "requirement_id": "FR-009",
@@ -922,7 +1055,9 @@
       "type": "integration",
       "scenario": "negative",
       "priority": "high",
-      "preconditions": ["server.js running on localhost:3000"],
+      "preconditions": [
+        "server.js running on localhost:3000"
+      ],
       "given": "server is running",
       "when": "GET http://localhost:3000/api/project?path=relative/path/without/slash",
       "then": "response status 400; response body JSON { error: 'Invalid path: must be absolute' }",
@@ -932,11 +1067,12 @@
         "Assert: JSON.parse(body).error === 'Invalid path: must be absolute'"
       ],
       "expected_result": "status=400; error='Invalid path: must be absolute'",
-      "test_data": { "relative_path": "relative/path/without/slash" }
+      "test_data": {
+        "relative_path": "relative/path/without/slash"
+      }
     },
-
     {
-      "id": "TC-E2E-flow1h",
+      "id": "TC-013h",
       "requirement_id": "FR-011",
       "user_story_id": "US-011",
       "ac_id": "AC-014",
@@ -944,7 +1080,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["server.js running; localStorage is empty; /tmp/test-aitri-project/ exists with valid spec/01_REQUIREMENTS.json containing 5 FRs and 5 USs"],
+      "preconditions": [
+        "server.js running; localStorage is empty; /tmp/test-aitri-project/ exists with valid spec/01_REQUIREMENTS.json containing 5 FRs and 5 USs"
+      ],
       "given": "browser opens http://localhost:3000 with empty localStorage; canvas shows empty state (data-testid='canvas-empty')",
       "when": "user clicks 'Add Project', types '/tmp/test-aitri-project' into the input, and presses Enter",
       "then": "within 3000ms: (1) canvas empty state is no longer visible; (2) cy.nodes().length >= 10 (5 FRs + 5 USs + at least 1 Epic); (3) sidebar contains 1 project item with text 'LOCAL'; (4) the added project's sidebar item has class 'active'",
@@ -961,12 +1099,13 @@
         "Assert: project item textContent includes 'LOCAL'",
         "Assert: project item has class 'active'"
       ],
-      "expected_result": "Graph visible with ≥10 nodes; 1 project in sidebar marked active with 'LOCAL' badge; canvas-empty gone",
-      "test_data": { "local_path": "/tmp/test-aitri-project" }
+      "expected_result": "Graph visible with \u226510 nodes; 1 project in sidebar marked active with 'LOCAL' badge; canvas-empty gone",
+      "test_data": {
+        "local_path": "/tmp/test-aitri-project"
+      }
     },
-
     {
-      "id": "TC-E2E-flow2h",
+      "id": "TC-013e",
       "requirement_id": "FR-010",
       "user_story_id": "US-010",
       "ac_id": "AC-013",
@@ -974,7 +1113,9 @@
       "type": "e2e",
       "scenario": "happy_path",
       "priority": "high",
-      "preconditions": ["server running; 2 local projects pre-registered in localStorage: ProjectA (5 FRs) and ProjectB (3 FRs)"],
+      "preconditions": [
+        "server running; 2 local projects pre-registered in localStorage: ProjectA (5 FRs) and ProjectB (3 FRs)"
+      ],
       "given": "ProjectA is active (cy.nodes('#FR-A001').length === 1); ProjectB is in sidebar (non-active)",
       "when": "ProjectB sidebar item is clicked",
       "then": "within 3000ms: cy.nodes('#FR-A001').length === 0 (ProjectA nodes gone); cy.nodes().length reflects ProjectB node count; ProjectB sidebar item has class 'active'; ProjectA does not",

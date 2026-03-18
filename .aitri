@@ -1,5 +1,5 @@
 {
-  "currentPhase": 4,
+  "currentPhase": 1,
   "approvedPhases": [
     1,
     "ux",
@@ -16,114 +16,13 @@
     4,
     5
   ],
-  "projectName": "POC",
+  "projectName": "AITRI GRAPH",
   "createdAt": "2026-03-16T22:41:15.224Z",
-  "aitriVersion": "0.1.58",
+  "aitriVersion": "0.1.63",
   "artifactsDir": "spec",
-  "updatedAt": "2026-03-17T01:21:52.536Z",
+  "updatedAt": "2026-03-18T00:57:08.085Z",
   "driftPhases": [],
   "events": [
-    {
-      "at": "2026-03-16T23:01:36.735Z",
-      "event": "completed",
-      "phase": "ux"
-    },
-    {
-      "at": "2026-03-17T00:01:44.739Z",
-      "event": "approved",
-      "phase": "ux"
-    },
-    {
-      "at": "2026-03-17T00:01:48.709Z",
-      "event": "started",
-      "phase": 2
-    },
-    {
-      "at": "2026-03-17T00:05:16.146Z",
-      "event": "completed",
-      "phase": 2
-    },
-    {
-      "at": "2026-03-17T00:09:08.575Z",
-      "event": "approved",
-      "phase": 2
-    },
-    {
-      "at": "2026-03-17T00:09:08.607Z",
-      "event": "started",
-      "phase": 3
-    },
-    {
-      "at": "2026-03-17T00:12:37.230Z",
-      "event": "completed",
-      "phase": 3
-    },
-    {
-      "at": "2026-03-17T00:15:38.164Z",
-      "event": "approved",
-      "phase": 3
-    },
-    {
-      "at": "2026-03-17T00:15:38.196Z",
-      "event": "started",
-      "phase": 4
-    },
-    {
-      "at": "2026-03-17T00:51:17.143Z",
-      "event": "completed",
-      "phase": 4
-    },
-    {
-      "at": "2026-03-17T00:51:18.927Z",
-      "event": "approved",
-      "phase": 4
-    },
-    {
-      "at": "2026-03-17T00:51:20.992Z",
-      "event": "verify-run",
-      "phase": "verify",
-      "passed": 0,
-      "failed": 0,
-      "skipped": 40
-    },
-    {
-      "at": "2026-03-17T00:51:52.255Z",
-      "event": "verify-run",
-      "phase": "verify",
-      "passed": 8,
-      "failed": 0,
-      "skipped": 32
-    },
-    {
-      "at": "2026-03-17T01:18:21.886Z",
-      "event": "verify-run",
-      "phase": "verify",
-      "passed": 22,
-      "failed": 0,
-      "skipped": 18
-    },
-    {
-      "at": "2026-03-17T01:18:24.418Z",
-      "event": "verify-complete",
-      "phase": "verify",
-      "passed": 22,
-      "failed": 0
-    },
-    {
-      "at": "2026-03-17T01:18:28.109Z",
-      "event": "started",
-      "phase": 5
-    },
-    {
-      "at": "2026-03-17T01:20:13.691Z",
-      "event": "completed",
-      "phase": 5
-    },
-    {
-      "at": "2026-03-17T01:21:47.563Z",
-      "event": "approved",
-      "phase": 5
-    },
     {
       "at": "2026-03-17T01:21:52.505Z",
       "event": "completed",
@@ -133,24 +32,150 @@
       "at": "2026-03-17T01:21:52.535Z",
       "event": "approved",
       "phase": 4
+    },
+    {
+      "at": "2026-03-17T17:19:57.068Z",
+      "event": "completed",
+      "phase": 5
+    },
+    {
+      "at": "2026-03-17T17:19:59.764Z",
+      "event": "approved",
+      "phase": 5
+    },
+    {
+      "at": "2026-03-17T19:36:41.434Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 29,
+      "failed": 3,
+      "skipped": 8
+    },
+    {
+      "at": "2026-03-17T19:44:50.744Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 30,
+      "failed": 2,
+      "skipped": 8
+    },
+    {
+      "at": "2026-03-17T21:58:08.427Z",
+      "event": "completed",
+      "phase": 1
+    },
+    {
+      "at": "2026-03-17T22:11:28.445Z",
+      "event": "completed",
+      "phase": 1
+    },
+    {
+      "at": "2026-03-17T22:11:31.030Z",
+      "event": "approved",
+      "phase": 1
+    },
+    {
+      "at": "2026-03-17T23:35:52.950Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 20,
+      "failed": 0,
+      "skipped": 20
+    },
+    {
+      "at": "2026-03-17T23:39:51.399Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 20,
+      "failed": 0,
+      "skipped": 20
+    },
+    {
+      "at": "2026-03-17T23:41:26.526Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 20,
+      "failed": 0,
+      "skipped": 20
+    },
+    {
+      "at": "2026-03-17T23:42:31.720Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 20,
+      "failed": 0,
+      "skipped": 20
+    },
+    {
+      "at": "2026-03-17T23:42:59.575Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 30,
+      "failed": 2,
+      "skipped": 8
+    },
+    {
+      "at": "2026-03-17T23:44:07.741Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 32,
+      "failed": 0,
+      "skipped": 8
+    },
+    {
+      "at": "2026-03-17T23:44:12.589Z",
+      "event": "verify-complete",
+      "phase": "verify",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "at": "2026-03-18T00:32:27.880Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 36,
+      "failed": 0,
+      "skipped": 4
+    },
+    {
+      "at": "2026-03-18T00:32:31.460Z",
+      "event": "verify-complete",
+      "phase": "verify",
+      "passed": 36,
+      "failed": 0
+    },
+    {
+      "at": "2026-03-18T00:57:04.806Z",
+      "event": "verify-run",
+      "phase": "verify",
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "at": "2026-03-18T00:57:08.084Z",
+      "event": "verify-complete",
+      "phase": "verify",
+      "passed": 40,
+      "failed": 0
     }
   ],
   "artifactHashes": {
-    "1": "6aa1b786033771ec7cb53a88c0738ec2be262504c3b9185b79cdc118cf69ca67",
+    "1": "e770f9d19a307beeee9a8d8cd90603a7a31c37bd2d6e12b5da76b7af2ac692f6",
     "2": "8fb38fe32554737954e9b8dd868691576222a1c918a5777dcfa8dad05aab9fe8",
     "3": "121a2df41ca5873272348ab4a66c289a15c2cc2ac897f6c1933f174005906d85",
     "4": "dbaa85187e7d149b9cf8f432e920f60bb9d7d66f9c6d45383f23c30bd666e0f0",
-    "5": "ef0c046fd729d766067e614019731bcd35903cc5f4831fd91277dee62be02b95",
+    "5": "a8167e10954c8fde85f7ef3206e22090fe33d7c2190f5fe70a3173d1870ff849",
     "ux": "db4a28b808f51e892430559249f80ae0cbae38beba191765f52ef238721c6aec"
   },
   "verifyPassed": true,
-  "verifyTimestamp": "2026-03-17T01:18:24.418Z",
+  "verifyTimestamp": "2026-03-18T00:57:08.084Z",
   "verifySummary": {
     "total": 40,
-    "passed": 22,
+    "passed": 40,
     "failed": 0,
-    "skipped": 18,
-    "skipped_e2e": 15,
-    "skipped_no_marker": 3
+    "skipped": 0,
+    "skipped_e2e": 0,
+    "skipped_no_marker": 0
   }
 }

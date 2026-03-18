@@ -45,7 +45,7 @@ async function loadGitHub(url) {
 
   // Try main, then master (TC-008e)
   const branch = await resolveBranch(owner, repo);
-  if (!branch) throw new LoadError('NO_ARTIFACTS', `No Aitri spec found in ${owner}/${repo} — make sure spec/01_REQUIREMENTS.json exists on main or master branch`);
+  if (!branch) throw new LoadError('NOT_FOUND', `Repository ${owner}/${repo} not found or has no Aitri spec on main/master branch`);
 
   const base = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}`;
 
@@ -108,7 +108,8 @@ async function loadLocal(path) {
     throw new LoadError('NOT_FOUND', body.error ?? 'Path not found');
   }
   if (res.status === 422) {
-    throw new LoadError('NO_ARTIFACTS', 'No Aitri artifacts found at this path');
+    const body = await res.json().catch(() => ({}));
+    throw new LoadError('NO_ARTIFACTS', body.error ?? 'No Aitri artifacts found at this path');
   }
   if (!res.ok) {
     throw new LoadError('SERVER_ERROR', `Server error (${res.status})`);

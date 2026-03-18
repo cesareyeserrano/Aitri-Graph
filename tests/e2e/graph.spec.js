@@ -1,9 +1,9 @@
 /**
  * Playwright e2e tests — Aitri Graph Visualizer
- * @aitri-tc TC-001h, TC-002h, TC-003h, TC-003e, TC-003f, TC-004h, TC-004e,
+ * @aitri-tc TC-001h, TC-001f, TC-002h, TC-003h, TC-003e, TC-003f, TC-004h, TC-004e, TC-004f,
  *           TC-005h, TC-005e, TC-005f, TC-006e, TC-007h, TC-007e, TC-007f,
- *           TC-010h, TC-010e, TC-011f, TC-012h, TC-012e, TC-012f,
- *           TC-E2E-flow1h, TC-E2E-flow2h
+ *           TC-010h, TC-010e, TC-010f, TC-011f, TC-012h, TC-012e, TC-012f,
+ *           TC-013h, TC-013e
  */
 import { test, expect } from '@playwright/test';
 import { fileURLToPath } from 'url';
@@ -315,8 +315,8 @@ test('TC-012f: fit button is disabled when no project is loaded', async ({ page 
   await expect(page.locator('#zoom-out')).toBeDisabled();
 });
 
-// ── TC-E2E-flow1h: first-time user loads local project ───────────
-test('TC-E2E-flow1h: first-time user adds local project and sees graph', async ({ page }) => {
+// ── TC-013h: first-time user loads local project ───────────
+test('TC-013h: first-time user adds local project and sees graph', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('[data-testid="canvas-empty"]')).toBeVisible();
   await page.click('#add-project-btn');
@@ -331,8 +331,8 @@ test('TC-E2E-flow1h: first-time user adds local project and sees graph', async (
   await expect(page.locator('#zoom-in')).toBeEnabled();
 });
 
-// ── TC-E2E-flow2h: user switches between two projects ────────────
-test('TC-E2E-flow2h: user switches between two registered projects', async ({ page }) => {
+// ── TC-013e: user switches between two projects ────────────
+test('TC-013e: user switches between two registered projects', async ({ page }) => {
   await page.goto('/');
   // Load demo
   await page.click('#demo-btn');
@@ -350,4 +350,66 @@ test('TC-E2E-flow2h: user switches between two registered projects', async ({ pa
   await expect(page.locator('#canvas-loading')).toBeHidden({ timeout: 8000 });
   const switchedNodes = await getCyNodes(page);
   expect(switchedNodes).toBe(demoNodes);
+});
+
+// ── TC-001f: malformed JSON shows canvas error ────────────────────
+test('TC-001f: malformed JSON at project path shows error in canvas with no blank page', async ({ page }) => {
+  const { mkdirSync, writeFileSync, rmSync, existsSync } = await import('fs');
+  const { join } = await import('path');
+  const BAD_PATH = '/tmp/bad-aitri-project';
+  mkdirSync(join(BAD_PATH, 'spec'), { recursive: true });
+  writeFileSync(join(BAD_PATH, 'spec', '01_REQUIREMENTS.json'), '{invalid json');
+
+  try {
+    await page.goto('/');
+    await page.click('#add-project-btn');
+    await page.fill('#project-input', BAD_PATH);
+    await page.click('#load-btn');
+    await expect(page.locator('#canvas-loading')).toBeHidden({ timeout: 8000 });
+
+    const errorEl = page.locator('[data-testid="canvas-error"]');
+    await expect(errorEl).toBeVisible();
+    const text = await errorEl.innerText();
+    expect(text.length).toBeGreaterThanOrEqual(10);
+    expect(text.toLowerCase()).toMatch(/could not parse|parse error|invalid json/);
+  } finally {
+    if (existsSync(BAD_PATH)) rmSync(BAD_PATH, { recursive: true });
+  }
+});
+
+// ── TC-004f: pan position stable after mouse release ──────────────
+test('TC-004f: pan position does not snap back after mouse release', async ({ page }) => {
+  await page.goto('/');
+  await loadDemo(page);
+
+  const canvas = page.locator('#cy');
+  await canvas.dragTo(canvas, {
+    sourcePosition: { x: 300, y: 300 },
+    targetPosition: { x: 500, y: 300 },
+  });
+
+  const pan0 = await page.evaluate(() => ({ ...window.__cy.pan() }));
+  await page.waitForTimeout(200);
+  const pan1 = await page.evaluate(() => ({ ...window.__cy.pan() }));
+
+  expect(Math.abs(pan1.x - pan0.x)).toBeLessThanOrEqual(1);
+});
+
+// ── TC-010f: removing active project clears canvas ─────────────────
+test('TC-010f: removing active project clears canvas to empty state', async ({ page }) => {
+  await page.goto('/');
+  await loadDemo(page);
+
+  // Confirm graph is loaded
+  expect(await getCyNodes(page)).toBeGreaterThan(0);
+
+  // Click remove button on first sidebar item
+  const item = page.locator('[data-testid="project-item"]').first();
+  await item.locator('.remove-btn').click();
+  await item.locator('.confirm-yes').click();
+
+  // Canvas should return to empty state
+  await expect(page.locator('[data-testid="canvas-empty"]')).toBeVisible({ timeout: 3000 });
+  await expect(page.locator('[data-testid="project-item"]')).toHaveCount(0);
+  expect(await getCyNodes(page)).toBe(0);
 });

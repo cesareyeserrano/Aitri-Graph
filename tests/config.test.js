@@ -94,6 +94,36 @@ test('TC-010e: deriveName correctly extracts repo name from GitHub URL', () => {
   assert.equal(deriveName('https://github.com/cesareyeserrano/Aitri', 'github'), 'Aitri');
 });
 
+// ── FR-002: Status Color Contrast ──────────────────────────────────
+
+// @aitri-tc TC-002e
+test('TC-002e: status color tokens meet ≥3:1 contrast ratio against node background', () => {
+  function luminance(hex) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    const toLinear = c => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+  }
+  function contrast(hex1, hex2) {
+    const l1 = luminance(hex1), l2 = luminance(hex2);
+    const [lighter, darker] = l1 > l2 ? [l1, l2] : [l2, l1];
+    return (lighter + 0.05) / (darker + 0.05);
+  }
+  const bg = '#1F2937';
+  const colors = {
+    pending:     '#94A3B8',
+    in_progress: '#60A5FA',
+    approved:    '#34D399',
+    complete:    '#A78BFA',
+    drift:       '#FB923C',
+  };
+  for (const [status, color] of Object.entries(colors)) {
+    const ratio = contrast(color, bg);
+    assert.ok(ratio >= 3.0, `${status} (${color}) contrast ratio ${ratio.toFixed(2)} < 3.0 against ${bg}`);
+  }
+});
+
 // ── FR-012: Fit Button ─────────────────────────────────────────────
 
 // @aitri-tc TC-012h

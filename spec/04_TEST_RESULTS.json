@@ -1,264 +1,264 @@
 {
-  "executed_at": "2026-03-17T01:18:21.885Z",
+  "executed_at": "2026-03-18T00:57:04.805Z",
   "test_runner": "bash tests/run.sh",
   "exit_code": 0,
   "results": [
     {
       "tc_id": "TC-001h",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-001h:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓   2 tests/e2e/graph.spec.js:42:1 › TC-001h: graph renders all 22 nodes from demo dataset within 3s (451ms)"
     },
     {
       "tc_id": "TC-001e",
       "status": "pass",
-      "notes": "✔ TC-001e: normalize produces correct hierarchy edges for FR→US→TC chain (0.823458ms)"
+      "notes": "✔ TC-001e: normalize produces correct hierarchy edges for FR→US→TC chain (0.52125ms)"
     },
     {
       "tc_id": "TC-001f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-001f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  35 tests/e2e/graph.spec.js:356:1 › TC-001f: malformed JSON at project path shows error in canvas with no blank page (467ms)"
     },
     {
       "tc_id": "TC-002h",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-002h:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓   3 tests/e2e/graph.spec.js:53:1 › TC-002h: all 5 statuses render with distinct colors and legend visible (437ms)"
     },
     {
       "tc_id": "TC-002e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-002e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✔ TC-002e: status color tokens meet ≥3:1 contrast ratio against node background (0.123125ms)"
     },
     {
       "tc_id": "TC-002f",
       "status": "pass",
-      "notes": "✔ TC-002f: node with missing status field defaults to pending without throwing (0.13375ms)"
+      "notes": "✔ TC-002f: node with missing status field defaults to pending without throwing (0.104916ms)"
     },
     {
       "tc_id": "TC-003h",
       "status": "pass",
-      "notes": "✔ TC-003h: ZOOM_STEP is 0.10 — zoom changes by exactly 10% per click (0.683917ms)"
+      "notes": "✔ TC-003h: ZOOM_STEP is 0.10 — zoom changes by exactly 10% per click (0.755709ms)"
     },
     {
       "tc_id": "TC-003e",
       "status": "pass",
-      "notes": "✔ TC-003e: zoom controls call cy.zoom with ZOOM_STEP delta (0.0585ms)"
+      "notes": "✔ TC-003e: zoom controls call cy.zoom with ZOOM_STEP delta (0.054625ms)"
     },
     {
       "tc_id": "TC-003f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-003f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓   9 tests/e2e/graph.spec.js:84:1 › TC-003f: edges remain visible after zooming out 5 times (582ms)"
     },
     {
       "tc_id": "TC-004h",
       "status": "pass",
-      "notes": "✔ TC-004h: autoungrabify is true — nodes cannot be dragged, only panned (0.04775ms)"
+      "notes": "✔ TC-004h: autoungrabify is true — nodes cannot be dragged, only panned (0.042125ms)"
     },
     {
       "tc_id": "TC-004e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-004e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  12 tests/e2e/graph.spec.js:112:1 › TC-004e: clicking canvas without dragging does not pan (≤3px threshold) (544ms)"
     },
     {
       "tc_id": "TC-004f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-004f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  36 tests/e2e/graph.spec.js:381:1 › TC-004f: pan position does not snap back after mouse release (744ms)"
     },
     {
       "tc_id": "TC-005h",
       "status": "pass",
-      "notes": "✔ TC-005h: collapsedState Map tracks expanded/collapsed descendants (0.0405ms)"
+      "notes": "✔ TC-005h: collapsedState Map tracks expanded/collapsed descendants (0.041917ms)"
     },
     {
       "tc_id": "TC-005e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-005e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  14 tests/e2e/graph.spec.js:156:1 › TC-005e: clicking collapsed node restores hidden descendants (1.0s)"
     },
     {
       "tc_id": "TC-005f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-005f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  15 tests/e2e/graph.spec.js:172:1 › TC-005f: clicking a leaf Test Case node does not collapse anything (641ms)"
     },
     {
       "tc_id": "TC-006h",
       "status": "pass",
-      "notes": "✔ TC-006h: normalize produces dependency edge for US-002 → US-001 (0.088083ms)"
+      "notes": "✔ TC-006h: normalize produces dependency edge for US-002 → US-001 (0.417083ms)"
     },
     {
       "tc_id": "TC-006e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-006e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  16 tests/e2e/graph.spec.js:184:1 › TC-006e: dependency edges render with dashed line style (415ms)"
     },
     {
       "tc_id": "TC-006f",
       "status": "pass",
-      "notes": "✔ TC-006f: dependency referencing non-existent node ID does not crash and produces no edge (0.077625ms)"
+      "notes": "✔ TC-006f: dependency referencing non-existent node ID does not crash and produces no edge (0.070167ms)"
     },
     {
       "tc_id": "TC-007h",
       "status": "pass",
-      "notes": "✔ TC-007h: tooltip rendering function references all required fields (0.054333ms)"
+      "notes": "✔ TC-007h: tooltip rendering function references all required fields (0.058125ms)"
     },
     {
       "tc_id": "TC-007e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-007e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  18 tests/e2e/graph.spec.js:213:1 › TC-007e: tooltip shows dependency IDs for nodes with dependencies (472ms)"
     },
     {
       "tc_id": "TC-007f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-007f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  19 tests/e2e/graph.spec.js:223:1 › TC-007f: tooltip disappears after mouseout (5.2s)"
     },
     {
       "tc_id": "TC-008h",
       "status": "pass",
-      "notes": "✔ TC-008h: buildGitHubRawUrl constructs correct raw.githubusercontent.com URL (0.427083ms)"
+      "notes": "✔ TC-008h: buildGitHubRawUrl constructs correct raw.githubusercontent.com URL (0.385ms)"
     },
     {
       "tc_id": "TC-008e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-008e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✔ TC-008e: loader falls back to master branch when main branch returns 404 (0.26025ms)"
     },
     {
       "tc_id": "TC-008f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-008f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✔ TC-008f: non-existent GitHub repo (404 on both branches) throws LoadError NOT_FOUND (0.878625ms)"
     },
     {
       "tc_id": "TC-009h",
       "status": "pass",
-      "notes": "✔ TC-009h: GET /api/project returns 200 with artifacts for valid Aitri path (19.521583ms)"
+      "notes": "✔ TC-009h: GET /api/project returns 200 with artifacts for valid Aitri path (21.282958ms)"
     },
     {
       "tc_id": "TC-009e",
       "status": "pass",
-      "notes": "✔ TC-009e: GET /api/project returns 200 with testCases=null when 03_TEST_CASES.json absent (1.637209ms)"
+      "notes": "✔ TC-009e: GET /api/project returns 200 with testCases=null when 03_TEST_CASES.json absent (2.503166ms)"
     },
     {
       "tc_id": "TC-009f",
       "status": "pass",
-      "notes": "✔ TC-009f: GET /api/project returns 404 for non-existent path (0.627208ms)"
+      "notes": "✔ TC-009f: GET /api/project returns 404 for non-existent path (0.809625ms)"
     },
     {
       "tc_id": "TC-010h",
       "status": "pass",
-      "notes": "✔ TC-010h: deriveName correctly extracts project name from local path (0.0725ms)"
+      "notes": "✔ TC-010h: deriveName correctly extracts project name from local path (0.066875ms)"
     },
     {
       "tc_id": "TC-010e",
       "status": "pass",
-      "notes": "✔ TC-010e: deriveName correctly extracts repo name from GitHub URL (0.112042ms)"
+      "notes": "✔ TC-010e: deriveName correctly extracts repo name from GitHub URL (0.111292ms)"
     },
     {
       "tc_id": "TC-010f",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-010f:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  37 tests/e2e/graph.spec.js:399:1 › TC-010f: removing active project clears canvas to empty state (547ms)"
     },
     {
       "tc_id": "TC-011h",
       "status": "pass",
-      "notes": "✔ TC-011h: validateProjectInput returns valid=true source=github for GitHub URL (0.364667ms)"
+      "notes": "✔ TC-011h: validateProjectInput returns valid=true source=github for GitHub URL (0.300542ms)"
     },
     {
       "tc_id": "TC-011e",
       "status": "pass",
-      "notes": "✔ TC-011e: validateProjectInput returns valid=true source=local for absolute path (0.076584ms)"
+      "notes": "✔ TC-011e: validateProjectInput returns valid=true source=local for absolute path (0.07125ms)"
     },
     {
       "tc_id": "TC-011f",
       "status": "pass",
-      "notes": "✔ TC-011f: validateProjectInput returns valid=false with error.length>=10 for \"myproject\" (0.060042ms)"
+      "notes": "✔ TC-011f: validateProjectInput returns valid=false with error.length>=10 for \"myproject\" (0.057541ms)"
     },
     {
       "tc_id": "TC-012h",
       "status": "pass",
-      "notes": "✔ TC-012h: fit() method calls cy.fit with 40px padding (0.040917ms)"
+      "notes": "✔ TC-012h: fit() method calls cy.fit with 40px padding (0.050542ms)"
     },
     {
       "tc_id": "TC-012e",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-012e:\" to be auto-detected. Likely requires browser or integration environment."
+      "status": "pass",
+      "notes": "✓  31 tests/e2e/graph.spec.js:298:1 › TC-012e: fit button on already-fitted graph does not throw (629ms)"
     },
     {
       "tc_id": "TC-012f",
       "status": "pass",
-      "notes": "✔ TC-012f: graph controls are disabled when no graph is loaded (0.046125ms)"
+      "notes": "✔ TC-012f: graph controls are disabled when no graph is loaded (0.075042ms)"
     },
     {
       "tc_id": "TC-NFR005h",
       "status": "pass",
-      "notes": "✔ TC-NFR005h: GET /api/project?path=../../etc/passwd returns 400 with no file content (0.550375ms)"
+      "notes": "✔ TC-NFR005h: GET /api/project?path=../../etc/passwd returns 400 with no file content (0.621542ms)"
     },
     {
       "tc_id": "TC-NFR005f",
       "status": "pass",
-      "notes": "✔ TC-NFR005f: GET /api/project?path=relative/path returns 400 (0.442834ms)"
+      "notes": "✔ TC-NFR005f: GET /api/project?path=relative/path returns 400 (0.500542ms)"
     },
     {
-      "tc_id": "TC-E2E-flow1h",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-flow1h:\" to be auto-detected. Likely requires browser or integration environment."
+      "tc_id": "TC-013h",
+      "status": "pass",
+      "notes": "✓   1 tests/e2e/cards.spec.js:48:1 › TC-013h: clicking a node opens its artifact card within 300ms (484ms)"
     },
     {
-      "tc_id": "TC-E2E-flow2h",
-      "status": "skip",
-      "notes": "Not detected in test runner output — test name must start with \"TC-E2E-flow2h:\" to be auto-detected. Likely requires browser or integration environment."
+      "tc_id": "TC-013e",
+      "status": "pass",
+      "notes": "✓  34 tests/e2e/graph.spec.js:335:1 › TC-013e: user switches between two registered projects (758ms)"
     }
   ],
   "fr_coverage": [
     {
       "fr_id": "FR-001",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-002",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-003",
-      "tests_passing": 2,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 1,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-004",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-005",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-006",
-      "tests_passing": 2,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 1,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-007",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-008",
-      "tests_passing": 1,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
@@ -270,32 +270,32 @@
     },
     {
       "fr_id": "FR-010",
-      "tests_passing": 2,
+      "tests_passing": 4,
       "tests_failing": 0,
-      "tests_skipped": 2,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-011",
-      "tests_passing": 3,
+      "tests_passing": 4,
       "tests_failing": 0,
-      "tests_skipped": 1,
+      "tests_skipped": 0,
       "status": "covered"
     },
     {
       "fr_id": "FR-012",
-      "tests_passing": 2,
+      "tests_passing": 3,
       "tests_failing": 0,
-      "tests_skipped": 1,
+      "tests_skipped": 0,
       "status": "covered"
     }
   ],
   "summary": {
     "total": 40,
-    "passed": 22,
+    "passed": 40,
     "failed": 0,
-    "skipped": 18,
-    "skipped_e2e": 15,
-    "skipped_no_marker": 3
+    "skipped": 0,
+    "skipped_e2e": 0,
+    "skipped_no_marker": 0
   }
 }

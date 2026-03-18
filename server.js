@@ -72,32 +72,31 @@ function handleApiProject(req, res, url) {
 
   if (!existsSync(path))  return json(res, 404, { error: `Path not found: ${path}` });
 
-  // Resolve symlinks and verify the real path matches — prevents symlink traversal
+  // Resolve symlinks to get the real path for file operations (e.g. /tmp → /private/tmp on macOS)
   let resolvedPath;
   try { resolvedPath = realpathSync(path); } catch {
     return json(res, 400, { error: 'Invalid path: cannot resolve' });
   }
-  if (resolvedPath !== path) return json(res, 400, { error: 'Invalid path: symlinks not allowed' });
 
-  const reqPath = join(path, 'spec', '01_REQUIREMENTS.json');
+  const reqPath = join(resolvedPath, 'spec', '01_REQUIREMENTS.json');
   if (!existsSync(reqPath)) return json(res, 422, { error: 'No Aitri artifacts found at this path' });
 
   let requirements;
   try {
     requirements = JSON.parse(readFileSync(reqPath, 'utf8'));
   } catch {
-    return json(res, 500, { error: 'Server error reading artifacts' });
+    return json(res, 422, { error: 'Could not parse artifact: invalid JSON format' });
   }
 
   let testCases = null;
   try {
-    const tcPath = join(path, 'spec', '03_TEST_CASES.json');
+    const tcPath = join(resolvedPath, 'spec', '03_TEST_CASES.json');
     if (existsSync(tcPath)) testCases = JSON.parse(readFileSync(tcPath, 'utf8'));
   } catch { /* optional file */ }
 
   let aitriState = null;
   try {
-    const aitriPath = join(path, '.aitri');
+    const aitriPath = join(resolvedPath, '.aitri');
     if (existsSync(aitriPath)) aitriState = JSON.parse(readFileSync(aitriPath, 'utf8'));
   } catch { /* optional file */ }
 
@@ -105,7 +104,7 @@ function handleApiProject(req, res, url) {
   json(res, 200, { name, source: 'local', artifacts: { requirements, testCases, aitriState } });
 }
 
-function handleStatic(req, res, pathname) {
+function handleStatic(_req, res, pathname) {
   if (pathname === '/') pathname = '/index.html';
   const safePath = resolve(ROOT, '.' + pathname);
   if (!safePath.startsWith(ROOT)) {

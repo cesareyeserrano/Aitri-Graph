@@ -21,7 +21,8 @@ done
 PORT=$TEST_PORT node --test \
   "$ROOT/tests/normalizer.test.js" \
   "$ROOT/tests/server.test.js" \
-  "$ROOT/tests/config.test.js"
+  "$ROOT/tests/config.test.js" \
+  "$ROOT/tests/loader.test.js"
 EXIT_CODE=$?
 
 # Kill server

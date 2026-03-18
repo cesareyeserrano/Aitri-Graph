@@ -1,9 +1,10 @@
 /**
  * GraphRenderer — Cytoscape.js wrapper.
  * Handles: hierarchical layout (dagre), node styling, zoom/pan,
- * expand/collapse, dependency edges, tooltip.
- * @aitri-trace FR-ID: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-007, FR-012
+ * expand/collapse, dependency edges, tooltip, artifact cards.
+ * @aitri-trace FR-ID: FR-001, FR-002, FR-003, FR-004, FR-005, FR-006, FR-007, FR-012, FR-013
  */
+import { CardManager } from './cards.js';
 
 const STATUS_COLORS = {
   pending:     '#94A3B8',
@@ -65,9 +66,14 @@ export function initGraph(container) {
     });
   }
 
-  // ── Expand/Collapse (FR-005) ──────────────────────────────────
+  // ── Expand/Collapse (FR-005) + Artifact Cards (FR-013) ──────────────────────────────────
   cy.on('tap', 'node', function (evt) {
     const node = evt.target;
+
+    // FR-013: open/close artifact card — always fires before collapse/expand
+    // so both actions occur on every click regardless of node type or state.
+    /** @aitri-trace FR-ID: FR-013, TC-ID: TC-013h, TC-013f */
+    CardManager.toggle(node);
 
     // Check collapse first — descendants are removed when collapsed,
     // so getDescendants() would return empty and exit early if checked before this.
@@ -89,15 +95,18 @@ export function initGraph(container) {
     node.addClass('collapsed');
   });
 
-  // ── FR-004 fix: ±3px no-pan threshold on background click ─────
+  // ── FR-004: ±3px no-pan threshold + grabbing cursor ───────────
+  /** @aitri-trace FR-ID: FR-004, TC-ID: TC-004h, TC-004e */
   let panStart = null;
   let panPosAtStart = null;
   cy.on('mousedown', evt => {
     if (evt.target !== cy) return; // only on background
     panStart = { x: evt.originalEvent.clientX, y: evt.originalEvent.clientY };
     panPosAtStart = { ...cy.pan() };
+    container.style.cursor = 'grabbing'; // FR-004 new AC: grabbing cursor on drag
   });
   cy.on('mouseup', evt => {
+    container.style.cursor = ''; // revert cursor on release
     if (panStart && evt.target === cy) {
       const dx = evt.originalEvent.clientX - panStart.x;
       const dy = evt.originalEvent.clientY - panStart.y;
@@ -175,6 +184,14 @@ export function initGraph(container) {
             dependencies: n.dependencies,
             statusColor: STATUS_COLORS[n.status] ?? STATUS_COLORS.pending,
             ...NODE_SIZES[n.type],
+            // Pass through artifact detail fields for card rendering (FR-014)
+            ...(n.description          !== undefined && { description:          n.description }),
+            ...(n.priority             !== undefined && { priority:             n.priority }),
+            ...(n.acceptance_criteria  !== undefined && { acceptance_criteria:  n.acceptance_criteria }),
+            ...(n.implementation_level !== undefined && { implementation_level: n.implementation_level }),
+            ...(n.as_a    !== undefined && { as_a:    n.as_a }),
+            ...(n.i_want  !== undefined && { i_want:  n.i_want }),
+            ...(n.so_that !== undefined && { so_that: n.so_that }),
           },
         })),
         ...graphData.edges.map(e => ({
@@ -204,6 +221,7 @@ export function initGraph(container) {
 
     clear() {
       collapsedState.clear();
+      CardManager.closeAll(); // close all open cards when project changes
       cy.elements().remove();
     },
 

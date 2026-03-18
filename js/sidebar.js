@@ -51,6 +51,7 @@ export function initSidebar(gc) {
     renderProjectList();
     if (wasActive) {
       currentProjectId = null;
+      if (graphController) graphController.clear();
       showCanvasState('empty');
       updateLegend(false);
       updateControls(false);
