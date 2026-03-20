@@ -133,8 +133,15 @@ export async function syncFromServerRegistry() {
     const serverActiveUrl = serverData.activeProjectUrl ?? null;
 
     const registry = loadRegistry();
+
+    // Clean up stale local-browser entries stored with wrong source='local'
+    const before = registry.projects.length;
+    registry.projects = registry.projects.filter(p =>
+      !(p.source === 'local' && p.url && !p.url.startsWith('/'))
+    );
+    let changed = registry.projects.length !== before;
+
     const existingUrls = new Set(registry.projects.map(p => p.url));
-    let changed = false;
 
     // Merge server projects into localStorage
     for (const sp of serverProjects) {

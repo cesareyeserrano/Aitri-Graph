@@ -95,6 +95,10 @@ async function resolveBranch(owner, repo) {
  * @aitri-trace FR-ID: FR-009, TC-ID: TC-009h, TC-009e, TC-009f
  */
 async function loadLocal(path) {
+  // Guard: browser-picked folders stored with old source='local' — catch them here
+  if (!path || !path.startsWith('/')) {
+    throw new LoadError('NOT_FOUND', 'Elige la carpeta de nuevo usando el botón 📁');
+  }
   let res;
   try {
     res = await fetchWithTimeout(`/api/project?path=${encodeURIComponent(path)}`);
