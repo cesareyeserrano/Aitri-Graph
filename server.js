@@ -187,13 +187,15 @@ function handleRegistryPatch(req, res) {
 }
 
 /**
- * DELETE /api/registry/:id — remove a project by id.
+ * DELETE /api/registry?url=<encoded> — remove a project by URL.
  */
-function handleRegistryDelete(req, res, id) {
-  if (!id) return json(res, 400, { error: 'Missing project id' });
+function handleRegistryDelete(req, res, url) {
+  const projectUrl = url.searchParams.get('url');
+  if (!projectUrl) return json(res, 400, { error: 'Missing url param' });
   const registry = readRegistry();
   const before = registry.projects.length;
-  registry.projects = (registry.projects ?? []).filter(p => p.id !== id);
+  registry.projects = (registry.projects ?? []).filter(p => p.url !== projectUrl);
+  if (registry.activeProjectUrl === projectUrl) registry.activeProjectUrl = null;
   if (registry.projects.length === before) return json(res, 404, { error: 'Project not found' });
   writeRegistry(registry);
   json(res, 200, { ok: true });
@@ -253,8 +255,8 @@ const server = createServer((req, res) => {
   if (req.method === 'GET'    && url.pathname === '/api/registry')       return handleRegistryGet(req, res);
   if (req.method === 'POST'   && url.pathname === '/api/registry')       return handleRegistryPost(req, res);
   if (req.method === 'PATCH'  && url.pathname === '/api/registry')       return handleRegistryPatch(req, res);
-  if (req.method === 'DELETE' && url.pathname.startsWith('/api/registry/')) {
-    return handleRegistryDelete(req, res, url.pathname.slice('/api/registry/'.length));
+  if (req.method === 'DELETE' && url.pathname === '/api/registry') {
+    return handleRegistryDelete(req, res, url);
   }
   handleStatic(req, res, url.pathname);
 });

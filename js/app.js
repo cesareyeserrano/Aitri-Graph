@@ -78,9 +78,9 @@ export function removeProject(id) {
   saveRegistry(registry);
   artifactCache.delete(id);
   emit('project:removed', { projectId: id, wasActive });
-  // Sync removal to server registry async
+  // Sync removal to server registry async (match by URL — IDs differ between client and server)
   if (project) {
-    fetch(`/api/registry/${encodeURIComponent(project.id)}`, { method: 'DELETE' }).catch(() => {});
+    fetch(`/api/registry?url=${encodeURIComponent(project.url)}`, { method: 'DELETE' }).catch(() => {});
   }
 }
 
