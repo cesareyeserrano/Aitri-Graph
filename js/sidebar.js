@@ -369,7 +369,8 @@ async function handleBrowse(existingProject = null) {
     updateLegend(true);
     updateControls(true);
   } catch (err) {
-    const msg = err instanceof LoadError ? err.message : 'No se pudo leer la carpeta';
+    console.error('[handleBrowse] error:', err);
+    const msg = err instanceof LoadError ? err.message : `No se pudo leer la carpeta: ${err?.message ?? err}`;
     showCanvasState('error', msg);
     updateControls(false);
     updateLegend(false);

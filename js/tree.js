@@ -146,7 +146,6 @@ export function initTree(container, { onSelect } = {}) {
   const collapsed = new Set();
 
   function render(graphData) {
-    CardManager.closeAll();
     collapsed.clear();
     currentData = graphData;
     _paint();
