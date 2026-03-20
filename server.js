@@ -6,7 +6,7 @@
  */
 import { createServer } from 'http';
 import { readFileSync, existsSync, realpathSync, writeFileSync, mkdirSync } from 'fs';
-import { join, resolve, extname, dirname } from 'path';
+import { join, resolve, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { homedir } from 'os';
 import { randomUUID } from 'crypto';
@@ -145,7 +145,7 @@ function handleRegistryPost(req, res) {
     const { url, name, source } = payload ?? {};
     if (!url || typeof url !== 'string') return json(res, 400, { error: 'Missing field: url' });
     if (!name || typeof name !== 'string') return json(res, 400, { error: 'Missing field: name' });
-    if (!['local', 'github', 'demo'].includes(source)) return json(res, 400, { error: 'Invalid source' });
+    if (!['local', 'github', 'demo', 'local-browser'].includes(source)) return json(res, 400, { error: 'Invalid source' });
 
     const registry = readRegistry();
     if (!Array.isArray(registry.projects)) registry.projects = [];
@@ -189,7 +189,7 @@ function handleRegistryPatch(req, res) {
 /**
  * DELETE /api/registry?url=<encoded> — remove a project by URL.
  */
-function handleRegistryDelete(req, res, url) {
+function handleRegistryDelete(_req, res, url) {
   const projectUrl = url.searchParams.get('url');
   if (!projectUrl) return json(res, 400, { error: 'Missing url param' });
   const registry = readRegistry();

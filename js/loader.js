@@ -24,9 +24,12 @@ export class LoadError extends Error {
  * @aitri-trace FR-ID: FR-008, FR-009
  */
 export async function loadProject(project) {
-  if (project.source === 'github') return loadGitHub(project.url);
-  if (project.source === 'local')  return loadLocal(project.url);
-  if (project.source === 'demo')   return loadDemo();
+  if (project.source === 'github')       return loadGitHub(project.url);
+  if (project.source === 'local')        return loadLocal(project.url);
+  if (project.source === 'demo')         return loadDemo();
+  if (project.source === 'local-browser') {
+    throw new LoadError('NOT_FOUND', 'Vuelve a elegir la carpeta para recargar este proyecto');
+  }
   throw new LoadError('NOT_FOUND', 'Unknown project source');
 }
 

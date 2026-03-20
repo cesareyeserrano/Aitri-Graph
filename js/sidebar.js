@@ -323,7 +323,7 @@ async function handleBrowse() {
 
   try {
     const data = await loadFromDirectoryHandle(dirHandle);
-    const project = addProject(`local://${dirHandle.name}`, data.name, 'local');
+    const project = addProject(`local-browser://${dirHandle.name}`, data.name, 'local-browser');
     setActiveProject(project.id);
     currentProjectId = project.id;
     const graphData = normalize(data.artifacts);
