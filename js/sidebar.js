@@ -263,6 +263,12 @@ function selectProject(project) {
  * @aitri-trace FR-ID: FR-001, FR-008, FR-009
  */
 async function loadAndRender(project) {
+  // Browser-picked folders can't be reloaded without re-picking the handle
+  if (project.source === 'local-browser') {
+    showRepickPrompt(project);
+    return;
+  }
+
   showCanvasState('loading', `Loading ${project.name}…`);
   updateLegend(false);
   updateControls(false);
@@ -277,7 +283,7 @@ async function loadAndRender(project) {
     updateLegend(true);
     updateControls(true);
     setProjectItemState(project.id, 'default');
-    startPolling(project); // start 30s change detection for local projects
+    startPolling(project);
   } catch (err) {
     const msg = err instanceof LoadError
       ? err.message
@@ -287,6 +293,37 @@ async function loadAndRender(project) {
     updateLegend(false);
     updateControls(false);
   }
+}
+
+function showRepickPrompt(project) {
+  const area = document.getElementById('canvas-area');
+  // Hide other states
+  ['canvas-empty', 'canvas-loading', 'canvas-error', 'detail-panel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+
+  let prompt = document.getElementById('repick-prompt');
+  if (!prompt) {
+    prompt = document.createElement('div');
+    prompt.id = 'repick-prompt';
+    prompt.className = 'canvas-state';
+    area.appendChild(prompt);
+  }
+  prompt.innerHTML = `
+    <div style="font-size:40px">📁</div>
+    <div class="empty-title">${project.name}</div>
+    <div class="empty-sub">Los archivos locales requieren volver a elegir la carpeta cada sesión.</div>
+    <button id="repick-btn" class="browse-btn" style="margin-top:8px;max-width:240px">
+      📁 Volver a elegir carpeta
+    </button>
+  `;
+  prompt.classList.remove('hidden');
+
+  document.getElementById('repick-btn').addEventListener('click', async () => {
+    prompt.classList.add('hidden');
+    await handleBrowse(project);
+  });
 }
 
 // ── Add Project Form ──────────────────────────────────────────────
@@ -304,7 +341,7 @@ function hideForm() {
   clearValidationError();
 }
 
-async function handleBrowse() {
+async function handleBrowse(existingProject = null) {
   if (!window.showDirectoryPicker) {
     showValidationError('Tu navegador no soporta el selector de carpetas. Usa Chrome o Edge.');
     return;
