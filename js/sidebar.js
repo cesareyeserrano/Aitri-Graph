@@ -7,7 +7,7 @@ import {
   getProjects, getActiveProject, addProject, removeProject,
   setActiveProject, validateProjectInput, on, emit, syncFromServerRegistry,
 } from './app.js';
-import { loadProject, LoadError } from './loader.js';
+import { loadProject, loadFromDirectoryHandle, LoadError } from './loader.js';
 import { normalize } from './normalizer.js';
 
 let graphController = null;
@@ -113,6 +113,7 @@ export function initSidebar(gc) {
   document.getElementById('add-project-btn').addEventListener('click', showForm);
   document.getElementById('cancel-btn').addEventListener('click', hideForm);
   document.getElementById('load-btn').addEventListener('click', handleLoad);
+  document.getElementById('browse-btn').addEventListener('click', handleBrowse);
   document.getElementById('demo-btn').addEventListener('click', handleDemo);
 
   // Mobile sidebar toggle
@@ -301,6 +302,41 @@ function hideForm() {
   document.getElementById('add-project-form').classList.remove('visible');
   document.getElementById('project-input').value = '';
   clearValidationError();
+}
+
+async function handleBrowse() {
+  if (!window.showDirectoryPicker) {
+    showValidationError('Tu navegador no soporta el selector de carpetas. Usa Chrome o Edge.');
+    return;
+  }
+  let dirHandle;
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+  } catch {
+    return; // user cancelled
+  }
+
+  hideForm();
+  showCanvasState('loading', `Cargando ${dirHandle.name}…`);
+  updateControls(false);
+  updateLegend(false);
+
+  try {
+    const data = await loadFromDirectoryHandle(dirHandle);
+    const project = addProject(`local://${dirHandle.name}`, data.name, 'local');
+    setActiveProject(project.id);
+    currentProjectId = project.id;
+    const graphData = normalize(data.artifacts);
+    graphController.render(graphData);
+    showCanvasState(null);
+    updateLegend(true);
+    updateControls(true);
+  } catch (err) {
+    const msg = err instanceof LoadError ? err.message : 'No se pudo leer la carpeta';
+    showCanvasState('error', msg);
+    updateControls(false);
+    updateLegend(false);
+  }
 }
 
 /**

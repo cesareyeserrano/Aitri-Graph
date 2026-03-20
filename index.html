@@ -49,19 +49,20 @@
     <div id="add-project-section">
       <button id="add-project-btn" aria-label="Add project">+ Add Project</button>
       <form id="add-project-form" novalidate onsubmit="return false">
+        <!-- Local folder picker -->
+        <button id="browse-btn" type="button" class="browse-btn" title="Choose a local folder">
+          📁 Choose folder…
+        </button>
+        <div class="form-divider"><span>or paste a GitHub URL</span></div>
         <input
           id="project-input"
           type="text"
-          placeholder="GitHub URL or /local/path"
+          placeholder="https://github.com/owner/repo"
           autocomplete="off"
           spellcheck="false"
-          aria-label="Project URL or path"
+          aria-label="GitHub URL"
           aria-describedby="form-validation-error"
         />
-        <div class="input-hints">
-          GitHub: https://github.com/owner/repo<br/>
-          Local:&nbsp; /Users/you/project
-        </div>
         <div id="form-validation-error" data-testid="form-validation-error" role="alert"></div>
         <div class="form-actions">
           <button id="load-btn" type="button">Load</button>

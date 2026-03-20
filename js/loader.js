@@ -163,6 +163,42 @@ async function fetchWithTimeout(url) {
   }
 }
 
+/**
+ * Load artifacts directly from a FileSystemDirectoryHandle (browser File System Access API).
+ * No server needed — reads spec/ files straight from the user's local folder.
+ * @param {FileSystemDirectoryHandle} dirHandle
+ * @returns {Promise<{name, source, artifacts}>}
+ */
+export async function loadFromDirectoryHandle(dirHandle) {
+  async function readJSON(path) {
+    try {
+      const parts = path.split('/');
+      let handle = dirHandle;
+      for (let i = 0; i < parts.length - 1; i++) {
+        handle = await handle.getDirectoryHandle(parts[i]);
+      }
+      const fileHandle = await handle.getFileHandle(parts[parts.length - 1]);
+      const file = await fileHandle.getFile();
+      return JSON.parse(await file.text());
+    } catch {
+      return null;
+    }
+  }
+
+  const requirements = await readJSON('spec/01_REQUIREMENTS.json');
+  if (!requirements) {
+    throw new LoadError('NO_ARTIFACTS', 'No Aitri artifacts found — make sure spec/01_REQUIREMENTS.json exists');
+  }
+
+  const [testCases, aitriState] = await Promise.all([
+    readJSON('spec/03_TEST_CASES.json'),
+    readJSON('.aitri'),
+  ]);
+
+  const name = requirements.project_name ?? dirHandle.name;
+  return { name, source: 'local', artifacts: { requirements, testCases, aitriState } };
+}
+
 async function fetchJSON(url, required) {
   try {
     const res = await fetchWithTimeout(url);
