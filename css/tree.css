@@ -120,3 +120,10 @@
   white-space: nowrap;
   cursor: default;
 }
+
+/* ── Active row ───────────────────────────────────────────────── */
+.tree-row.active {
+  background: rgba(96, 165, 250, 0.12);
+  border-left: 2px solid #60A5FA;
+  padding-left: calc(var(--row-pl, 8px) - 2px);
+}

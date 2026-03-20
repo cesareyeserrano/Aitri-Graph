@@ -22,8 +22,8 @@ html, body {
 
 /* ── Sidebar ── */
 #sidebar {
-  width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
+  width: 300px;
+  min-width: 300px;
   height: 100%;
   background: var(--surface);
   border-right: 1px solid var(--border);
@@ -46,15 +46,66 @@ html, body {
   letter-spacing: 0.06em;
 }
 
+/* Project list — fixed small height */
 #project-list {
-  flex: 1;
+  max-height: 160px;
   overflow-y: auto;
   padding: var(--sp-2) 0;
+  flex-shrink: 0;
 }
 
 #project-list::-webkit-scrollbar { width: 4px; }
 #project-list::-webkit-scrollbar-track { background: transparent; }
 #project-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Artifact tree section — takes all remaining space */
+#tree-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#tree-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+#tree-section-header #status-legend {
+  position: static;
+  display: flex;
+  gap: 4px;
+  flex-direction: row;
+}
+
+#tree-section-header #status-legend.hidden {
+  visibility: hidden;
+}
+
+#tree-section-header .legend-item {
+  display: flex;
+  align-items: center;
+}
+
+#tree {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 0;
+}
+
+#tree::-webkit-scrollbar { width: 4px; }
+#tree::-webkit-scrollbar-track { background: transparent; }
+#tree::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 #add-project-section {
   padding: var(--sp-3) var(--sp-3) var(--sp-4);
@@ -62,17 +113,12 @@ html, body {
   flex-shrink: 0;
 }
 
-/* ── Graph Canvas Area ── */
+/* ── Detail Panel Area ── */
 #canvas-area {
   flex: 1;
   position: relative;
   background: var(--canvas-bg);
   overflow: hidden;
-}
-
-#cy {
-  width: 100%;
-  height: 100%;
 }
 
 /* ── Floating Panels ── */

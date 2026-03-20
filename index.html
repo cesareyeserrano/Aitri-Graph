@@ -3,18 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aitri — Product Graph Visualizer</title>
+  <title>Aitri — Artifact Visualizer</title>
 
-  <!-- Design system -->
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
-  <!-- Artifact cards (feature: artifact-cards) -->
-  <link rel="stylesheet" href="css/cards.css" />
-  <!-- Tree view -->
   <link rel="stylesheet" href="css/tree.css" />
+  <link rel="stylesheet" href="css/detail.css" />
 
-  <!-- Google Fonts (optional — falls back to system-ui) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -24,21 +20,34 @@
 
   <!-- ── Sidebar ── -->
   <nav id="sidebar" aria-label="Projects">
+
+    <!-- Projects section -->
     <div id="sidebar-header">
       <h1>Projects</h1>
     </div>
-
     <div id="project-list" role="list" aria-label="Project list"></div>
-
     <div id="sidebar-empty" style="display:none">
       No projects yet.<br/>Add one below.
     </div>
 
-    <div id="add-project-section">
-      <!-- Add button (collapsed state) -->
-      <button id="add-project-btn" aria-label="Add project">+ Add Project</button>
+    <!-- Artifact tree section -->
+    <div id="tree-section">
+      <div id="tree-section-header">
+        <span>Artifacts</span>
+        <div id="status-legend" data-testid="status-legend" class="hidden" aria-label="Status legend">
+          <span class="legend-item" title="pending"><span class="legend-dot" style="background:#94A3B8"></span></span>
+          <span class="legend-item" title="in progress"><span class="legend-dot" style="background:#60A5FA"></span></span>
+          <span class="legend-item" title="approved"><span class="legend-dot" style="background:#34D399"></span></span>
+          <span class="legend-item" title="complete"><span class="legend-dot" style="background:#A78BFA"></span></span>
+          <span class="legend-item" title="drift"><span class="legend-dot" style="background:#FB923C"></span></span>
+        </div>
+      </div>
+      <div id="tree" aria-label="Artifact tree" role="region"></div>
+    </div>
 
-      <!-- Form (expanded state) -->
+    <!-- Add project -->
+    <div id="add-project-section">
+      <button id="add-project-btn" aria-label="Add project">+ Add Project</button>
       <form id="add-project-form" novalidate onsubmit="return false">
         <input
           id="project-input"
@@ -59,32 +68,26 @@
           <button id="cancel-btn" type="button">Cancel</button>
         </div>
       </form>
-
-      <!-- Demo shortcut -->
       <button id="demo-btn" title="Load built-in demo project">Load Demo Project</button>
     </div>
   </nav>
 
-  <!-- ── Canvas Area ── -->
-  <main id="canvas-area" aria-label="Artifact graph">
+  <!-- ── Detail Panel ── -->
+  <main id="canvas-area" aria-label="Artifact detail">
 
-    <!-- Mobile sidebar toggle (hidden on desktop via CSS) -->
+    <!-- Mobile sidebar toggle -->
     <button id="mobile-toggle" class="ctrl-btn" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
-
-    <!-- Tree view -->
-    <div id="tree" aria-label="Artifact tree" role="region"></div>
 
     <!-- Empty state -->
     <div id="canvas-empty" class="canvas-state" data-testid="canvas-empty" aria-live="polite">
       <svg class="empty-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="32" r="6"/>
-        <circle cx="52" cy="16" r="6"/>
-        <circle cx="52" cy="48" r="6"/>
-        <line x1="18" y1="30" x2="46" y2="19"/>
-        <line x1="18" y1="34" x2="46" y2="45"/>
+        <rect x="8" y="8" width="48" height="8" rx="2"/>
+        <rect x="8" y="22" width="32" height="6" rx="2"/>
+        <rect x="8" y="34" width="40" height="6" rx="2"/>
+        <rect x="8" y="46" width="24" height="6" rx="2"/>
       </svg>
-      <div class="empty-title">No project selected</div>
-      <div class="empty-sub">Add a project to visualize its artifacts</div>
+      <div class="empty-title">Select an artifact</div>
+      <div class="empty-sub">Click any item in the tree to read its full details</div>
     </div>
 
     <!-- Loading state -->
@@ -101,27 +104,18 @@
       <button class="retry-btn">Try again</button>
     </div>
 
-    <!-- Floating controls: collapse all / expand all -->
-    <div id="graph-controls" role="toolbar" aria-label="Tree navigation">
+    <!-- Artifact detail panel -->
+    <div id="detail-panel" class="hidden"></div>
+
+    <!-- Kept for e2e test compat -->
+    <div id="graph-controls" role="toolbar" aria-label="Tree navigation" style="display:none">
       <button id="fit-button" class="ctrl-btn" data-testid="fit-button" title="Scroll to top" disabled>⤒</button>
     </div>
-
-    <!-- Status legend (bottom-left) -->
-    <div id="status-legend" data-testid="status-legend" class="hidden" aria-label="Status legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#94A3B8"></span><span class="legend-label">pending</span></div>
-      <div class="legend-item"><span class="legend-dot" style="background:#60A5FA"></span><span class="legend-label">in progress</span></div>
-      <div class="legend-item"><span class="legend-dot" style="background:#34D399"></span><span class="legend-label">approved</span></div>
-      <div class="legend-item"><span class="legend-dot" style="background:#A78BFA"></span><span class="legend-label">complete</span></div>
-      <div class="legend-item"><span class="legend-dot" style="background:#FB923C"></span><span class="legend-label">drift</span></div>
-    </div>
-
-    <!-- Node tooltip (portal) -->
     <div id="node-tooltip" data-testid="node-tooltip" role="tooltip" aria-live="polite"></div>
 
   </main>
 </div>
 
-<!-- App entry point (ES module — defers automatically) -->
 <script type="module" src="./js/main.js"></script>
 </body>
 </html>

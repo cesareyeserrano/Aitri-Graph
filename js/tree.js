@@ -1,10 +1,8 @@
 /**
- * TreeView — file-explorer-style artifact tree renderer.
- * Replaces the Cytoscape graph with a collapsible tree.
- * Implements the same graphController interface: { render, clear, fit, zoomIn, zoomOut }
+ * TreeView — file-explorer-style artifact tree renderer (sidebar).
+ * Implements the graphController interface: { render, clear, fit, zoomIn, zoomOut }
+ * Calls onSelect(node) when user clicks a node label.
  */
-
-import { CardManager } from './cards.js';
 
 const STATUS_COLOR = {
   pending:     '#94A3B8',
@@ -143,7 +141,7 @@ function renderNode(node, collapsed, depth) {
  * Initialize the tree view and return a graphController-compatible object.
  * @param {HTMLElement} container
  */
-export function initTree(container) {
+export function initTree(container, { onSelect } = {}) {
   let currentData = null;
   const collapsed = new Set();
 
@@ -183,9 +181,11 @@ export function initTree(container) {
 
       const clickedLabel = e.target.closest('.tree-label');
       if (clickedLabel) {
-        // Open/toggle detail card
         const node = currentData.nodes.find(n => n.id === id);
-        if (node) CardManager.toggle(node);
+        if (node && onSelect) onSelect(node);
+        // Mark row as active
+        container.querySelectorAll('.tree-row.active').forEach(r => r.classList.remove('active'));
+        row.classList.add('active');
         return;
       }
 
@@ -206,7 +206,6 @@ export function initTree(container) {
   }
 
   function clear() {
-    CardManager.closeAll();
     container.innerHTML = '';
     currentData = null;
     collapsed.clear();
