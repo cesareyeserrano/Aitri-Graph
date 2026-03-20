@@ -398,7 +398,7 @@ function showCanvasState(state, message = '', project = null) {
 // ── Controls & Legend ─────────────────────────────────────────────
 
 function updateControls(enabled) {
-  ['zoom-in', 'zoom-out', 'fit-button'].forEach(id => {
+  ['fit-button'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.disabled = !enabled;
   });

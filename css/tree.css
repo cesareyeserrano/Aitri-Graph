@@ -1,0 +1,122 @@
+/* ── Tree View — file-explorer style ──────────────────────────── */
+
+#tree {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 0;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.tree-root,
+.tree-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-children.hidden {
+  display: none;
+}
+
+/* ── Row ─────────────────────────────────────────────────────── */
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 1px 6px;
+  min-height: 28px;
+  transition: background 0.1s;
+}
+
+.tree-row:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.tree-row:active {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ── Chevron ──────────────────────────────────────────────────── */
+
+.tree-chevron {
+  font-size: 10px;
+  width: 14px;
+  flex-shrink: 0;
+  color: #6B7280;
+  user-select: none;
+  transition: transform 0.15s;
+}
+
+/* ── Status dot ───────────────────────────────────────────────── */
+
+.tree-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Type badge ───────────────────────────────────────────────── */
+
+.tree-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.tree-badge--epic       { background: #374151; color: #E5E7EB; }
+.tree-badge--feature    { background: #1E3A5F; color: #93C5FD; }
+.tree-badge--user_story { background: #1A3A2A; color: #6EE7B7; }
+.tree-badge--test_case  { background: #2D1F42; color: #C4B5FD; }
+
+/* ── Label ────────────────────────────────────────────────────── */
+
+.tree-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #E5E7EB;
+  cursor: pointer;
+}
+
+.tree-label:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Node type sizing */
+.tree-node--epic       > .tree-row > .tree-label { font-weight: 600; font-size: 14px; }
+.tree-node--feature    > .tree-row > .tree-label { font-weight: 500; }
+.tree-node--user_story > .tree-row > .tree-label { color: #D1D5DB; }
+.tree-node--test_case  > .tree-row > .tree-label { color: #9CA3AF; font-size: 12px; }
+
+/* ── Dependency badges ────────────────────────────────────────── */
+
+.tree-deps {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.tree-dep-badge {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(251,146,60,0.15);
+  color: #FB923C;
+  white-space: nowrap;
+  cursor: default;
+}

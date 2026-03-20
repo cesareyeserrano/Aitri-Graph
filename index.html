@@ -11,16 +11,13 @@
   <link rel="stylesheet" href="css/components.css" />
   <!-- Artifact cards (feature: artifact-cards) -->
   <link rel="stylesheet" href="css/cards.css" />
+  <!-- Tree view -->
+  <link rel="stylesheet" href="css/tree.css" />
 
   <!-- Google Fonts (optional — falls back to system-ui) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- Cytoscape.js + dagre layout (served locally) -->
-  <script src="vendor/cytoscape.min.js"></script>
-  <script src="vendor/dagre.min.js"></script>
-  <script src="vendor/cytoscape-dagre.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -74,8 +71,8 @@
     <!-- Mobile sidebar toggle (hidden on desktop via CSS) -->
     <button id="mobile-toggle" class="ctrl-btn" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
 
-    <!-- Graph canvas -->
-    <div id="cy" aria-hidden="true"></div>
+    <!-- Tree view -->
+    <div id="tree" aria-label="Artifact tree" role="region"></div>
 
     <!-- Empty state -->
     <div id="canvas-empty" class="canvas-state" data-testid="canvas-empty" aria-live="polite">
@@ -104,11 +101,9 @@
       <button class="retry-btn">Try again</button>
     </div>
 
-    <!-- Floating graph controls (top-right) -->
-    <div id="graph-controls" role="toolbar" aria-label="Graph navigation">
-      <button id="zoom-in"   class="ctrl-btn" data-testid="zoom-in"    title="Zoom in"    disabled>+</button>
-      <button id="zoom-out"  class="ctrl-btn" data-testid="zoom-out"   title="Zoom out"   disabled>−</button>
-      <button id="fit-button" class="ctrl-btn" data-testid="fit-button" title="Fit to screen" disabled>⊡</button>
+    <!-- Floating controls: collapse all / expand all -->
+    <div id="graph-controls" role="toolbar" aria-label="Tree navigation">
+      <button id="fit-button" class="ctrl-btn" data-testid="fit-button" title="Scroll to top" disabled>⤒</button>
     </div>
 
     <!-- Status legend (bottom-left) -->

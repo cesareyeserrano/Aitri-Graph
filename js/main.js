@@ -1,22 +1,13 @@
-import { initGraph } from './graph.js';
+import { initTree } from './tree.js';
 import { initSidebar } from './sidebar.js';
 
-// Register cytoscape-dagre plugin (requires window.cytoscape to be loaded via CDN)
-if (window.cytoscape && window.cytoscapeDagre) {
-  window.cytoscape.use(window.cytoscapeDagre);
-}
+const container = document.getElementById('tree');
+const gc = initTree(container);
 
-const container = document.getElementById('cy');
-
-const gc = initGraph(container);
-
-// Wire controls
-document.getElementById('zoom-in').addEventListener('click',    () => gc.zoomIn());
-document.getElementById('zoom-out').addEventListener('click',   () => gc.zoomOut());
+// Fit button → scroll to top
 document.getElementById('fit-button').addEventListener('click', () => gc.fit());
 
 initSidebar(gc);
 
-// Expose cy for e2e tests (Playwright)
-window.__cy = gc._cy;
+// Expose for e2e tests
 window.__gc = gc;
