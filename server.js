@@ -164,6 +164,29 @@ function handleRegistryPost(req, res) {
 }
 
 /**
+ * PATCH /api/registry — update activeProjectUrl.
+ * Body: { activeProjectUrl: string }
+ */
+function handleRegistryPatch(req, res) {
+  let body = '';
+  req.on('data', chunk => { body += chunk; });
+  req.on('end', () => {
+    let payload;
+    try { payload = JSON.parse(body); } catch {
+      return json(res, 400, { error: 'Invalid JSON body' });
+    }
+    const { activeProjectUrl } = payload ?? {};
+    if (typeof activeProjectUrl !== 'string' && activeProjectUrl !== null) {
+      return json(res, 400, { error: 'activeProjectUrl must be a string or null' });
+    }
+    const registry = readRegistry();
+    registry.activeProjectUrl = activeProjectUrl ?? null;
+    writeRegistry(registry);
+    json(res, 200, { ok: true });
+  });
+}
+
+/**
  * DELETE /api/registry/:id — remove a project by id.
  */
 function handleRegistryDelete(req, res, id) {
@@ -229,6 +252,7 @@ const server = createServer((req, res) => {
   if (req.method === 'GET'    && url.pathname === '/api/project/status') return handleProjectStatus(req, res, url);
   if (req.method === 'GET'    && url.pathname === '/api/registry')       return handleRegistryGet(req, res);
   if (req.method === 'POST'   && url.pathname === '/api/registry')       return handleRegistryPost(req, res);
+  if (req.method === 'PATCH'  && url.pathname === '/api/registry')       return handleRegistryPatch(req, res);
   if (req.method === 'DELETE' && url.pathname.startsWith('/api/registry/')) {
     return handleRegistryDelete(req, res, url.pathname.slice('/api/registry/'.length));
   }

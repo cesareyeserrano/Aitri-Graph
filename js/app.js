@@ -95,6 +95,12 @@ export function setActiveProject(id) {
   project.lastAccessedAt = new Date().toISOString();
   saveRegistry(registry);
   emit('project:selected', { project });
+  // Persist active project URL to server so it survives localStorage clears
+  fetch('/api/registry', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activeProjectUrl: project.url }),
+  }).catch(() => {});
 }
 
 // ── Artifact Cache ────────────────────────────────────────────────
@@ -122,12 +128,15 @@ export async function syncFromServerRegistry() {
   try {
     const res = await fetch('/api/registry');
     if (!res.ok) return;
-    const { projects: serverProjects } = await res.json();
-    if (!Array.isArray(serverProjects) || serverProjects.length === 0) return;
+    const serverData = await res.json();
+    const serverProjects = serverData.projects ?? [];
+    const serverActiveUrl = serverData.activeProjectUrl ?? null;
 
     const registry = loadRegistry();
     const existingUrls = new Set(registry.projects.map(p => p.url));
-    let added = false;
+    let changed = false;
+
+    // Merge server projects into localStorage
     for (const sp of serverProjects) {
       if (!sp.url || existingUrls.has(sp.url)) continue;
       registry.projects.push({
@@ -139,9 +148,19 @@ export async function syncFromServerRegistry() {
         lastAccessedAt: new Date().toISOString(),
       });
       existingUrls.add(sp.url);
-      added = true;
+      changed = true;
     }
-    if (added) {
+
+    // Restore activeProjectId from server's activeProjectUrl if not already set locally
+    if (serverActiveUrl && !registry.activeProjectId) {
+      const match = registry.projects.find(p => p.url === serverActiveUrl);
+      if (match) {
+        registry.activeProjectId = match.id;
+        changed = true;
+      }
+    }
+
+    if (changed) {
       saveRegistry(registry);
       emit('registry:synced', {});
     }
