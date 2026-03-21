@@ -8,6 +8,7 @@ import {
   setActiveProject, validateProjectInput, on, emit, syncFromServerRegistry,
 } from './app.js';
 import { loadProject, loadFromDirectoryHandle, LoadError } from './loader.js';
+import { saveHandle, getHandle, deleteHandle } from './handle-store.js';
 import { normalize } from './normalizer.js';
 
 let graphController = null;
@@ -235,6 +236,7 @@ function createProjectItem(project) {
   });
   item.querySelector('.confirm-yes').addEventListener('click', e => {
     e.stopPropagation();
+    if (project.source === 'local-browser') deleteHandle(project.url).catch(() => {});
     removeProject(project.id);
   });
   item.querySelector('.confirm-no').addEventListener('click', e => {
@@ -263,9 +265,9 @@ function selectProject(project) {
  * @aitri-trace FR-ID: FR-001, FR-008, FR-009
  */
 async function loadAndRender(project) {
-  // Browser-picked folders can't be reloaded without re-picking the handle
+  // Browser-picked folders: try to restore from IndexedDB handle
   if (project.source === 'local-browser') {
-    showRepickPrompt(project);
+    await loadFromStoredHandle(project);
     return;
   }
 
@@ -293,6 +295,36 @@ async function loadAndRender(project) {
     updateLegend(false);
     updateControls(false);
   }
+}
+
+async function loadFromStoredHandle(project) {
+  try {
+    const handle = await getHandle(project.url);
+    if (handle) {
+      // Check / request permission
+      let perm = await handle.queryPermission({ mode: 'read' });
+      if (perm === 'prompt') {
+        perm = await handle.requestPermission({ mode: 'read' });
+      }
+      if (perm === 'granted') {
+        showCanvasState('loading', `Cargando ${project.name}…`);
+        updateLegend(false);
+        updateControls(false);
+        const data = await loadFromDirectoryHandle(handle);
+        const graphData = normalize(data.artifacts);
+        graphController.render(graphData);
+        showCanvasState(null);
+        updateLegend(true);
+        updateControls(true);
+        setProjectItemState(project.id, 'default');
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('[loadFromStoredHandle]', err);
+  }
+  // No handle or permission denied — show repick prompt
+  showRepickPrompt(project);
 }
 
 function showRepickPrompt(project) {
@@ -360,7 +392,10 @@ async function handleBrowse(existingProject = null) {
 
   try {
     const data = await loadFromDirectoryHandle(dirHandle);
-    const project = addProject(`local-browser://${dirHandle.name}`, data.name, 'local-browser');
+    const projectUrl = `local-browser://${dirHandle.name}`;
+    const project = addProject(projectUrl, data.name, 'local-browser');
+    // Persist handle in IndexedDB so we can auto-reload on next visit
+    await saveHandle(projectUrl, dirHandle);
     setActiveProject(project.id);
     currentProjectId = project.id;
     const graphData = normalize(data.artifacts);
