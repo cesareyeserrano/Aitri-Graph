@@ -118,6 +118,21 @@ function renderUserStory(node) {
     frag.appendChild(section('User Story', div));
   }
 
+  if (node.acceptance_criteria?.length) {
+    const ul = el('ul', 'detail-ac-list');
+    node.acceptance_criteria.forEach(ac => {
+      const li = el('li', 'detail-ac-item');
+      if (typeof ac === 'string') { li.textContent = ac; }
+      else {
+        if (ac.given) li.appendChild(Object.assign(el('span', 'ac-part'), { innerHTML: `<b>Given</b> ${ac.given}` }));
+        if (ac.when)  li.appendChild(Object.assign(el('span', 'ac-part'), { innerHTML: `<b>When</b> ${ac.when}` }));
+        if (ac.then)  li.appendChild(Object.assign(el('span', 'ac-part'), { innerHTML: `<b>Then</b> ${ac.then}` }));
+      }
+      ul.appendChild(li);
+    });
+    frag.appendChild(section('Acceptance Criteria', ul));
+  }
+
   if (node.dependencies?.length) {
     frag.appendChild(renderDeps(node.dependencies));
   }
@@ -130,10 +145,17 @@ function renderTestCase(node) {
   frag.appendChild(renderHeader(node));
 
   const meta = el('div', 'detail-meta-grid');
-  if (node.type)     meta.appendChild(renderMetaRow('Type', node.nodeType ?? node.type));
+  if (node.nodeType) meta.appendChild(renderMetaRow('Type',     node.nodeType));
   if (node.scenario) meta.appendChild(renderMetaRow('Scenario', node.scenario));
   if (node.priority) meta.appendChild(renderMetaRow('Priority', node.priority));
+  if (node.ac_id)    meta.appendChild(renderMetaRow('AC',       node.ac_id));
   if (meta.children.length) frag.appendChild(section('Details', meta));
+
+  if (node.preconditions?.length) {
+    const ul = el('ul', 'detail-steps');
+    node.preconditions.forEach(p => ul.appendChild(el('li', 'detail-step', p)));
+    frag.appendChild(section('Preconditions', ul));
+  }
 
   if (node.given || node.when || node.then) {
     const div = el('div', 'detail-story');

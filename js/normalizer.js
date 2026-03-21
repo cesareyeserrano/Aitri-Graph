@@ -144,9 +144,10 @@ export function normalize(artifacts) {
       dependencies: us.dependencies ?? [],
       collapsed: false,
       // Pass through user story narrative fields for card rendering (FR-014)
-      ...(us.as_a   !== undefined && { as_a:   us.as_a }),
-      ...(us.i_want !== undefined && { i_want: us.i_want }),
-      ...(us.so_that !== undefined && { so_that: us.so_that }),
+      ...(us.as_a              !== undefined && { as_a:              us.as_a }),
+      ...(us.i_want            !== undefined && { i_want:            us.i_want }),
+      ...(us.so_that           !== undefined && { so_that:           us.so_that }),
+      ...(us.acceptance_criteria !== undefined && { acceptance_criteria: us.acceptance_criteria }),
     });
   });
 
@@ -168,6 +169,16 @@ export function normalize(artifacts) {
       parentId,
       dependencies: t.dependencies ?? [],
       collapsed: false,
+      ...(t.scenario        !== undefined && { scenario:        t.scenario }),
+      ...(t.priority        !== undefined && { priority:        t.priority }),
+      ...(t.type            !== undefined && { nodeType:        t.type }),
+      ...(t.preconditions   !== undefined && { preconditions:   t.preconditions }),
+      ...(t.given           !== undefined && { given:           t.given }),
+      ...(t.when            !== undefined && { when:            t.when }),
+      ...(t.then            !== undefined && { then:            t.then }),
+      ...(t.steps           !== undefined && { steps:           t.steps }),
+      ...(t.expected_result !== undefined && { expected_result: t.expected_result }),
+      ...(t.test_data       !== undefined && { test_data:       t.test_data }),
     });
   });
 
